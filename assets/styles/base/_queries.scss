@@ -1,0 +1,43 @@
+@include media-breakpoint-up(md) {
+    .top-search__input {
+        width: 20rem;
+    }
+
+    .top-extras__icons {
+        float: none;
+    }
+
+    .top-extras__icons a i {
+        font-size: 1.2rem;
+    }
+
+    a.btn-slider {
+        font-size: 1.4rem;
+    }
+
+    .slide-text__subhead,
+    .slide-text__head {
+        font-size: 3rem;
+    }
+    .image-with-button img {
+        width: 100%;
+      }
+}
+@include media-breakpoint-up(lg) {
+    .slide-text__subhead,
+    .slide-text__head {
+        font-size: 3.4rem;
+    }
+    .user-access__icon {
+        display: inline;
+    }
+    .user-nav-mobile {
+        font-weight: 400;
+    }
+}
+@include media-breakpoint-up(xl) {
+    .slide-text__subhead,
+    .slide-text__head {
+        font-size: 4rem;
+    }
+}

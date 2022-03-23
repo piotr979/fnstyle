@@ -1,0 +1,49 @@
+.mini-item {
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+}
+.mini-item__image {
+    width:100%;
+}
+.mini-item__image {
+    transition: .4s all;
+    transform: scale(1);
+}
+.mini-item:hover .mini-item__image {
+    transform: scale(1.1);
+}
+.mini-item:hover .mini-item-btn__add {
+    opacity: 1; 
+}
+.mini-item:hover .mini-item-btn__like {
+    right: 5%;
+}
+.mini-item-btn__add {
+    position: absolute;
+    bottom: 5%;
+    transition: .4s all;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 700;
+    border: 0;
+    opacity: 0;
+    width: 75%;
+    padding: .3rem 0rem;
+}
+.mini-item-btn__add:hover {
+    background-color: black;
+    color: white;
+}
+.mini-item-btn__like {
+    position: absolute;
+    top: 5%;
+    right: -30%;
+    transition: .4s all ease-in;
+    border: 0;
+    background-color: white;
+    transform: scale(1);
+}
+.mini-item-btn__like:hover {
+    transform: scale(1.1);
+}

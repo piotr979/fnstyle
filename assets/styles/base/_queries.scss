@@ -1,10 +1,15 @@
 @include media-breakpoint-up(md) {
-    .top-search__input {
+    a.thumbnail-with-button__link {
         width: 20rem;
     }
+    .thumbnail-heading {
+        bottom: 14%;
+    }
+}
 
-    .top-extras__icons {
-        float: none;
+@include media-breakpoint-up(md) {
+    .top-search__input {
+        width: 20rem;
     }
 
     .top-extras__icons a i {
@@ -33,6 +38,12 @@
     }
     .user-nav-mobile {
         font-weight: 400;
+    }
+    .mini-item__image {
+        width: 100%;
+    }
+    .mini-item-btn__add {
+        width: 150px;
     }
 }
 @include media-breakpoint-up(xl) {

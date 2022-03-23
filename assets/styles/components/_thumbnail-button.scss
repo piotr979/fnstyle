@@ -1,0 +1,35 @@
+.thumbnail-with-button {
+    position: relative
+}
+.thumbnail-with-button img {
+    width: 100%;
+    height: auto;
+}
+.thumbnail-heading {
+    color: white;
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    text-align: center;
+    transform: translateX(-50%);
+}
+a.thumbnail-with-button__link {
+    position: absolute;
+    bottom: 4%;
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    border-width: 4px;
+    border-style: solid;
+    padding: .2rem 2rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: black;
+    transition: .4s all;
+    width: 13rem;
+}
+a.thumbnail-with-button__link:hover {
+    border-width: 4px;
+    padding: .3rem 3rem;
+}

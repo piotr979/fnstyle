@@ -1,0 +1,67 @@
+{% extends 'shop/base.html.twig' %}
+{% block body %}
+	<section class="container mt-4">
+		<div class="row">
+			<p>
+				<small class="text-secondary">Home->Shop->Men->Jackets->Leather Jacket</small>
+			</p>
+		</div>
+
+	</section>
+	<section class="container item-single">
+		<div class="row">
+			<div class="col-12 col-md-6">
+				<img class="width-100" src="{{ asset('assets/images/clothing-big/mens/jackets/leatherjacket.png') }}" alt="Item image">
+			</div>
+			<div class="mt-2 mt-md-0 col-12 col-md-6">
+				<p>
+					<small class="text-secondary">Shinitzu</small>
+				</p>
+				<h2 class="fw-bold">$699.99</h2>
+				<ul class="list-unstyled mt-4">
+					<li>
+						<small>Best quality materials</small>
+					</li>
+					<li>
+						<small>Free delivery for all orders over $100</small>
+					</li>
+					<li>
+						<small>Return with no cost up to 14 days</small>
+					</li>
+				</ul>
+				<div class="d-flex align-items-start">
+					<p class="pe-3">Size</p>
+					<select>
+						<option value="XS">XS</option>
+						<option value="L">L</option>
+					</select>
+                </div>
+				
+					<div class="d-flex align-items-start">
+						<p class="pe-2">Color</p>
+						<select>
+							<option value="Red">Red</option>
+							<option value="Blue">Blue</option>
+						</select>
+					</div>
+	<p>Availability: 7 in stock</p>
+
+				<div class="d-flex align-items-center">
+                <input class="amt-input me-4 " type="number" min="0" max="3" value="1">
+                <button class="btn btn-action">Add to cart</button>
+                </div>
+			</div>
+		</section>
+
+        <section class="container">
+        <h3 class="mt-5">Other products</h3>
+		<div class="row">
+			{% include('components/item-mini.twig.html') %}
+			{% include('components/item-mini.twig.html') %}
+			{% include('components/item-mini.twig.html') %}
+			{% include('components/item-mini.twig.html') %}
+		</div>
+        
+	</section>
+
+	{% endblock %}

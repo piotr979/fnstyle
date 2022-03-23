@@ -12,3 +12,16 @@ a.btn-slider:hover {
     padding-left: 1rem;
     padding-right: 1rem;
 }
+.btn-action {
+    background-color: black;
+    color: white;
+    transition: .4s all;
+    border: 2px solid black;
+    width: 14rem;
+}
+.btn-action:hover {
+    background-color: white;
+    color: black;
+    
+}
+

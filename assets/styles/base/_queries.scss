@@ -1,4 +1,7 @@
 @include media-breakpoint-up(md) {
+    .font-smaller {
+        font-size: 1rem;
+    }
     a.thumbnail-with-button__link {
         width: 20rem;
     }
@@ -29,6 +32,7 @@
       }
 }
 @include media-breakpoint-up(lg) {
+   
     .slide-text__subhead,
     .slide-text__head {
         font-size: 3.4rem;
@@ -44,6 +48,9 @@
     }
     .mini-item-btn__add {
         width: 150px;
+    }
+    label #open-sidebar, label #close-sidebar {
+        top: 1rem;
     }
 }
 @include media-breakpoint-up(xl) {

@@ -1,3 +1,4 @@
+
 a.btn-slider {
     border: 1px solid #FFF;
     border-radius: 0px;
@@ -17,11 +18,44 @@ a.btn-slider:hover {
     color: white;
     transition: .4s all;
     border: 2px solid black;
-    width: 14rem;
+}
+
+.btn-checkout {
+    background-color: black;
+    color: white;
+    transition: .4s all;
+    border: 2px solid black;
+}
+.btn-checkout:hover {
+    background-color: white;
+    color: black !important;
+}
+
+.btn-action__secondary {
+    background-color: white;
+    color: black;
+    transition: .4s all;
+    border: 2px solid black;
+    width: 100%;
 }
 .btn-action:hover {
     background-color: white;
     color: black;
-    
 }
+.btn-trash {
+    background-color: white;
+    color: black;
+    border: none;
+}
+.btn-trash i {
+    font-size: 1rem;
+}
+.btn-action__flat {
+    background-color: black;
+    color: white;
+    transition: .4s all;
+    border: 2px solid black;
+    width: 14rem;
+}
+
 

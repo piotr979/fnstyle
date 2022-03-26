@@ -25,4 +25,11 @@ class ShopController extends AbstractController
     {
         return $this->render('shop/items-category.html.twig');
     }
+
+    #[Route('/customer-cart', name: 'customer-cart')]
+        public function customerCart() 
+        {
+            return $this->render('shop/customer-cart.html.twig');
+        }
+
 }

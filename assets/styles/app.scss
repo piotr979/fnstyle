@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700&family=Playfair+Display&display=swap');
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css");
 
-
+@import 'abstract/variables';
 @import 'base/grid';
 @import 'base/reset';
 @import "base/typography";
@@ -15,13 +15,14 @@
 @import 'components/search-top';
 @import 'components/thumbnail-button';
 
+@import 'layout/admin';
 @import 'layout/customer-cart';
 @import 'layout/footer';
 @import 'layout/navigation';
 
 @import "vendor/bs-overwrite";
 @import 'vendor/my_slider';
-
+@import 'vendor/navigator';
 
 body {
     background-color: white;
@@ -41,5 +42,9 @@ body {
     width: 100%;
     height: auto;
 }
+.font-smaller {
+    font-size: 0.9rem;
+}
+$baseBorderRadius: 0;
 @import 'base/queries';
 @import 'abstract/variables';

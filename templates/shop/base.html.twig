@@ -93,8 +93,15 @@
 									<i class="bi-cart me-1 user-access__icon"></i>Cart</a>
 							</li>
 							<li class="nav-item ms-lg-2">
-								<a href="#" class="user-nav-mobile">
-									<i class="bi-person me-1 user-access__icon"></i>Account</a>
+								 {% if is_granted("ROLE_ADMIN") %}
+								<a href="{{ path('catalog') }}" class="user-nav-mobile">
+									<i class="bi-person me-1 user-access__icon"></i>Admin page
+								</a>
+								     {% else %} 
+									<a href="{{ path('customer-account') }}" class="user-nav-mobile">
+									<i class="bi-person me-1 user-access__icon"></i>Account
+								</a>
+								{% endif %}
 							</li>
 						</ul>
 

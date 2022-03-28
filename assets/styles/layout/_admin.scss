@@ -1,3 +1,19 @@
 .navigator-icon {
     width: 1rem;
 }
+.info-block-1,
+.info-block-2,
+.info-block-3 {
+    border-radius: 5px;
+    color: white;
+    box-shadow: 2px 2px 8px #999;
+}
+.info-block-1 {
+    background-color: $admin-color-1;
+}
+.info-block-2 {
+    background-color: $admin-color-2;
+}
+.info-block-3 {
+    background-color: $admin-color-3;
+}

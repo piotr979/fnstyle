@@ -1,28 +1,25 @@
-{% extends 'shop/base.html.twig' %}
-{% block body %}
+{% extends 'base.html.twig' %}
 
-    <div class="container">
-        <div class="row">
-        <div class="col-12 col-lg-6 mt-2 mt-lg-5">
-            <h3>Login</h3>
-            <form method="post">
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+<form method="post">
     {% if error %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
     {% if app.user %}
-        
+        <div class="mb-3">
             You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
-       
+        </div>
     {% endif %}
-    <div class="mb-3">
-    <label class="form-label required d-block mt-2 pt-1" for="inputEmail">Email</label>
+
+    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+    <label for="inputEmail">Email</label>
     <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-    </div>
-     <div class="mb-3">
-    <label for="inputPassword" class="form-label required d-block mt-2">Password</label>
+    <label for="inputPassword">Password</label>
     <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-</div>
+
     <input type="hidden" name="_csrf_token"
            value="{{ csrf_token('authenticate') }}"
     >
@@ -38,27 +35,8 @@
         </div>
     #}
 
-    <button class="btn-action px-4" type="submit">
+    <button class="btn btn-lg btn-primary" type="submit">
         Sign in
     </button>
 </form>
-        </div>
-        <div class="col-12 col-lg-6 mt-5">
-         <h2>Register</h2>
-
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
-
-        <button type="submit" class="btn-action px-4">Register</button>
-    {{ form_end(registrationForm) }}
-        </div>
-        </div>
-    </div>
-   
-
-
 {% endblock %}

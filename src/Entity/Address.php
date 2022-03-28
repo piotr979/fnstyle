@@ -30,12 +30,12 @@ class Address
     #[ORM\Column(type: 'integer', nullable: true)]
     private $phoneNumber;
 
-    #[ORM\OneToMany(mappedBy: 'address', targetEntity: Customer::class)]
-    private $customer;
+    #[ORM\OneToMany(mappedBy: 'address', targetEntity: User::class)]
+    private $User;
 
     public function __construct()
     {
-        $this->customer = new ArrayCollection();
+        $this->User = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -104,29 +104,29 @@ class Address
     }
 
     /**
-     * @return Collection<int, Customer>
+     * @return Collection<int, User>
      */
-    public function getCustomer(): Collection
+    public function getUser(): Collection
     {
-        return $this->customer;
+        return $this->User;
     }
 
-    public function addCustomer(Customer $customer): self
+    public function addUser(User $User): self
     {
-        if (!$this->customer->contains($customer)) {
-            $this->customer[] = $customer;
-            $customer->setAddress($this);
+        if (!$this->User->contains($User)) {
+            $this->User[] = $User;
+            $User->setAddress($this);
         }
 
         return $this;
     }
 
-    public function removeCustomer(Customer $customer): self
+    public function removeUser(User $User): self
     {
-        if ($this->customer->removeElement($customer)) {
+        if ($this->User->removeElement($User)) {
             // set the owning side to null (unless already changed)
-            if ($customer->getAddress() === $this) {
-                $customer->setAddress(null);
+            if ($User->getAddress() === $this) {
+                $User->setAddress(null);
             }
         }
 

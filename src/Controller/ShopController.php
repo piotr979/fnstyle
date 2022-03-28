@@ -31,11 +31,4 @@ class ShopController extends AbstractController
         {
             return $this->render('shop/customer-cart.html.twig');
         }
-
-        #[Route('/customer-account', name: 'customer-account')]
-        public function customerAccount() 
-        {
-            return $this->render('shop/customer-account.html.twig');
-        }
-
 }

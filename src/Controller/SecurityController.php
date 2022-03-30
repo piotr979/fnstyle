@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\CustomerProfileType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -27,6 +28,7 @@ class SecurityController extends AbstractController
         $regForm->handleRequest($request);
 
         if ($regForm->isSubmitted() && $regForm->isValid()) {
+            dump("Regform");
             // encode the plain password
             $user->setPassword(
             $userPasswordHasher->hashPassword(
@@ -50,6 +52,22 @@ class SecurityController extends AbstractController
         return $this->render('shop/customer-account.html.twig');
     }
 
+    #[Route(path: '/customer-profile', name: 'customer-profile')]
+    public function customerProfile()
+    {
+        $user = new User();
+        $profileForm = $this->createForm(CustomerProfileType::class, $user);
+
+        if ($profileForm->isSubmitted() && $profileForm->isValid()) {
+            dump("Updated");
+            return $this->redirectToRoute('customer-profile');
+        }
+    
+        return $this->render('security/customer-profile.html.twig', [
+            'profileForm' => $profileForm->createView()
+        ]);
+    }
+
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -65,7 +83,7 @@ class SecurityController extends AbstractController
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 
-    #[Route(path: '/logout', name: 'app_logout')]
+    #[Route(path: '/logout', name: 'app-logout')]
     public function logout(): void
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');

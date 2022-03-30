@@ -97,10 +97,23 @@
 								<a href="{{ path('catalog') }}" class="user-nav-mobile">
 									<i class="bi-person me-1 user-access__icon"></i>Admin page
 								</a>
-								     {% else %} 
-									<a href="{{ path('customer-account') }}" class="user-nav-mobile">
-									<i class="bi-person me-1 user-access__icon"></i>Account
+									{%  elseif is_granted("ROLE_USER") %}
+<a href="{{ path('customer-profile') }}" class="user-nav-mobile">
+									<i class="bi-person me-1 user-access__icon"></i>My account
 								</a>
+							
+								     {% else %} 
+									 <a href="{{ path('customer-account') }}" class="user-nav-mobile">
+									<i class="bi-person me-1 user-access__icon"></i>Login&sol;Register
+								</a>
+								{% endif %}
+								{% if is_granted("ROLE_USER") %}
+								<li class="nav-item ms-lg-2">
+	<a href="{{ path('app-logout') }}" class="user-nav-mobile text-secondary fw-bold">
+									<i class="bi-box-arrow-right me-1 user-access__icon"></i>Log out
+								</a>
+								
+								</li>
 								{% endif %}
 							</li>
 						</ul>

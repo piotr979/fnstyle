@@ -33,9 +33,13 @@ class Address
     #[ORM\OneToMany(mappedBy: 'address', targetEntity: User::class)]
     private $User;
 
+    #[ORM\OneToMany(mappedBy: 'address', targetEntity: User::class)]
+    private $users;
+
     public function __construct()
     {
         $this->User = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -131,5 +135,13 @@ class Address
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
     }
 }

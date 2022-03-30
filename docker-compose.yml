@@ -10,7 +10,7 @@ services:
             - MYSQL_DATABASE=fnstyle
             - MYSQL_USER=user
         ports:
-            - "3306:3306"
+            - "9906:3306"
     web:
         build: .
         ports:

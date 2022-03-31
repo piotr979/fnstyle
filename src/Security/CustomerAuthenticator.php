@@ -19,7 +19,7 @@ class CustomerAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
-    public const LOGIN_ROUTE = 'customer-account';
+    public const LOGIN_ROUTE = 'home';
 
     private UrlGeneratorInterface $urlGenerator;
 

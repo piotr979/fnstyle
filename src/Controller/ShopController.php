@@ -31,34 +31,6 @@ class ShopController extends AbstractController
     {
         return $this->render('shop/items-category.html.twig');
     }
-       
-    #[Route('accounto', name: 'accounto')]
-    public function customerAccount(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
-    {
-        $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            dump("test");
-            exit;
-            // encode the plain password
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
-
-            $entityManager->persist($user);
-            $entityManager->flush();
-            // do anything else you need here, like send an email
-
-            return $this->redirectToRoute('home');
-        }
-
-        return $this->render('shop/custom.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
+  
 }

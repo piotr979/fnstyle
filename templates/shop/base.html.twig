@@ -25,8 +25,13 @@
 		<main>
 			<div class="container">
 				<div class="pt-2 row d-flex align-items-center">
-
+					<div class="col-12">
+						{% for message in app.flashes('notice') %}
+							<p class="text-success">{{ message }}</p>
+						{% endfor %}
+					</div>
 					<div class="top-logo col-8 col-md-4 order-0">
+					
 						<a href="{{ path('home') }}">
 							<h3 class="fw-bold">FNSTYLE</h3>
 						</a>
@@ -98,12 +103,12 @@
 									<i class="bi-person me-1 user-access__icon"></i>Admin page
 								</a>
 									{%  elseif is_granted("ROLE_USER") %}
-<a href="{{ path('customer-profile') }}" class="user-nav-mobile">
+<a href="{{ path('customer_profile') }}" class="user-nav-mobile">
 									<i class="bi-person me-1 user-access__icon"></i>My account
 								</a>
 							
 								     {% else %} 
-									 <a href="{{ path('customer_account') }}" class="user-nav-mobile">
+									 <a href="{{ path('app_login') }}" class="user-nav-mobile">
 									<i class="bi-person me-1 user-access__icon"></i>Login&sol;Register
 								</a>
 								{% endif %}

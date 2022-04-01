@@ -12,27 +12,29 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
-
+use App\Form\LoginForm;
 class SecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+
+    public function login(Request $request, AuthenticationUtils $authenticationUtils, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+   
+    $error = $authenticationUtils->getLastAuthenticationError();
+    $lastUsername = $authenticationUtils->getLastUsername();
 
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
+    $regForm = $this->createForm(RegistrationFormType::class, null, [
+        'action' => $this->generateUrl('app_register')
+    ]);
 
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+    return $this->render('customer/customer-account.html.twig', [
+        'regForm' => $regForm->createView(),
+        'last_username' => '', 'error' => ''
+    ]);
     }
-
+    
     #[Route(path: '/logout', name: 'app-logout')]
     public function logout(): void
     {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }

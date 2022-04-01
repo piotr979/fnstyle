@@ -1,5 +1,43 @@
 {% extends 'shop/base.html.twig' %}
 
 {% block body %}
-    <p>Hello</p>
-{% endblock %}
+	<div class="container">
+		<div class="row">
+            <h2 class="text-center my-4">Customer profile</h2>
+        </div>
+		<div class="row">
+			<div class="col-12 col-md-6">
+				{{ form_row(profileForm.firstName) }}
+			</div>
+			<div class="col-12 col-md-6">
+				{{ form_row(profileForm.lastName) }}
+			</div>
+		</div>
+		<div class="row">
+		<div class="col-12 col-md-6">
+				{{ form_row(profileForm.addressLine1) }}
+			</div>
+		<div class="col-12 col-md-6">
+				{{ form_row(profileForm.addressLine2) }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-4 col-md-2">
+				{{ form_row(profileForm.zipCode) }}
+			</div>
+			<div class="col-8 col-md-10">
+				{{ form_row(profileForm.city) }}
+			</div>
+		</div>
+        <div class="row">
+			<div class="col-12 col-md-6">
+				{{ form_row(profileForm.email)}}
+                </div>
+                	<div class="col-12 col-md-6">
+                	{{ form_row(profileForm.phone) }}
+			</div>
+		</div>
+	
+	{{ form_end(profileForm) }}
+
+</div></div>{% endblock %}

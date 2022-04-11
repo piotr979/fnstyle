@@ -1,0 +1,155 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+	<section class="container">
+		<div class="row ms-3 ms-sm-2 ms-md-0">
+			<div class="col ps-0">
+				<h2 class="fw-bold">Settings</h2>
+				<p>Miscellaneous</p>
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col-12 col-md-6 d-flex flex-row align-items-center">
+
+				<p class="mb-0">Select tab: &nbsp;</p>
+				<select id="page-switcher">
+					<option value="Category">Categories</option>
+					<option value="Size">Sizes</option>
+					<option value="Color">Colors</option>
+					<option value="Brand">Brands</option>
+				</select>
+			</div>
+		</div>
+
+
+		{% if classItem=="Category" %}
+			<div class="row">
+				<div class="col">
+					<table class="table">
+
+						<thead>
+							<tr>
+								<th scope="col" class="d-none d-sm-table-cell">#</th>
+								<th scope="col" class="d-sm-none">Act.</th>
+								<th scope="col" class="d-md-table-cell">Name</th>
+								<th scope="col" class="d-none d-sm-table-cell">Parent</th>
+								<th scope="col" class="d-none d-sm-table-cell">Actions</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							{% set count = 1 %}
+							{% for item in items %}
+
+								<tr class="item-row" >
+									<th class="d-none d-sm-table-cell" scope="row">{{ count }}</th>
+									{% set count = count + 1 %}
+
+									{# Action buttons for mobile only #}
+									<td class="d-sm-none">
+										<a class="btn-trash">
+											<i class="bi bi-pencil-square"></i>
+										</a>
+										<button class="btn-trash">
+											<i class="bi bi-trash"></i>
+										</button>
+									</td>
+									{# Action btns mobile ends here #}
+
+									<td class="d-table-cell">
+										{{ item.name }}
+									</td>
+
+									<td class="d-none d-sm-table-cell">{{ item.name }}</td>
+									<td class="d-none d-sm-table-cell" data-id="{{ item.id }}">
+										<button class="editButton btn-trash">
+											<i class="bi bi-pencil-square"></i>
+										</button>
+										<a href="#" class="btn-trash">
+											<i class="bi bi-trash"></i>
+										</a>
+
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+
+
+				</div>
+			{% elseif classItem=="Colors" %}
+				<div class="row">
+					{% for item in items %}
+						{{ item.name}}
+					{% endfor %}
+				</div>
+			{% endif %}
+
+
+			<!-- PAGINATION CONTROLS STARTS HERE -->
+			{% if items is not null %}
+				<div class="d-flex justify-content-center mt-5">
+					{{ knp_pagination_render(items) }}
+
+				</div>
+			{% endif %}
+			<!-- PAGINATION CONTROLS ENDS HERE -->
+			<button id="add-item" class="btn btn-action">Add new</button>
+
+			<div id="modal" class="modal">
+				<div class="modal-content">
+					<p class="txt-center">Enter category name</p>
+					<small class="txt-center" id="modal-error"></small>
+					<input id="category-input" name="category" class="txt-center" value="" maxlength="20" required>
+					<div class="mt-2 txt-center">
+						<button id="ok-button" class="btn btn-primary">OK</button>
+						<button id="cancel-button" class="btn btn-secondary">Cancel</button>
+					</div>
+				</div>
+			</div>
+
+		</section>
+	{% endblock %}
+	{% block javascripts %}
+		{{ parent() }}
+		<script>			
+		document.addEventListener("DOMContentLoaded", function () {
+
+	const modal = document.getElementById("modal");
+	const editBtns = document.querySelectorAll(".editButton");
+	const catInput = document.getElementById("category-input");
+ 	// Get the <span> element that closes the modal
+  	const okBtn = document.getElementById('ok-button');
+  	const cancelBtn = document.getElementById("cancel-button")
+
+	 editBtns.forEach((button) =>
+    button.addEventListener('click', function (e) {
+      const dataSet = e.target.parentNode.parentNode.dataset;
+	  console.log(dataSet);
+      id = dataSet.id;
+      catInput.setAttribute('value', dataSet.category);
+      modal.style.display = "block";
+    })
+  );
+
+const itemRows = document.querySelectorAll('.item-row');
+itemRows.forEach(row => {
+		row.addEventListener('click', function (e) {
+		const dataSet = e.target.parentNode.dataset;
+		console.log(dataSet);
+	});
+})
+
+
+const pageSwitcher = document.getElementById('page-switcher');
+pageSwitcher.addEventListener('click', switchPage);
+})
+function switchPage(ev) {
+let route = "{{ path('settings', {class: 'class'} ) }}";
+route = route.replace('class', ev.target.value);
+window.location = route;
+
+
+}
+		</script>
+	{% endblock %}

@@ -4,8 +4,11 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Form\AddressType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class CustomerProfileType extends AbstractType
 {
@@ -13,11 +16,15 @@ class CustomerProfileType extends AbstractType
     {
         $builder
             ->add('email')
-            ->add('roles')
-            ->add('password')
             ->add('firstName')
             ->add('lastName')
-           
+            ->add('address', AddressType::class, [
+            ])
+            ->add('Update', SubmitType::class, [
+                'attr' => [
+                    'class' => 'btn-secondary'
+                ]
+            ])
         ;
     }
 

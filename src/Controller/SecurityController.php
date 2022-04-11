@@ -29,12 +29,13 @@ class SecurityController extends AbstractController
 
     return $this->render('customer/customer-account.html.twig', [
         'regForm' => $regForm->createView(),
-        'last_username' => '', 'error' => ''
+        'last_username' => $lastUsername, 'error' => $error
     ]);
     }
     
-    #[Route(path: '/logout', name: 'app-logout')]
+    #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {
+        $this->addFlash('notice', 'You have been logged out successfully.');
     }
 }

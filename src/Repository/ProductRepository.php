@@ -44,6 +44,15 @@ class ProductRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
+    public function findAllPaginated(int $page, string $category, string $sorting )
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $qb = $this->createQueryBuilder('p')
+        ->getQuery()
+        ->getResult()
+        ;
+    }
+
 
     // /**
     //  * @return Product[] Returns an array of Product objects

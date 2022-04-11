@@ -2,23 +2,29 @@
 
 namespace App\Entity;
 
-use App\Repository\BrandRepository;
+use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: BrandRepository::class)]
-class Brand
+#[ORM\Entity(repositoryClass: CategoryRepository::class)]
+class Category
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 48)]
+    #[ORM\Column(type: 'integer')]
+    private $lft;
+
+    #[ORM\Column(type: 'integer')]
+    private $rgt;
+
+    #[ORM\Column(type: 'string', length: 50)]
     private $name;
 
-    #[ORM\OneToMany(mappedBy: 'brand', targetEntity: Product::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class)]
     private $products;
 
     public function __construct()
@@ -29,6 +35,30 @@ class Brand
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getLft(): ?int
+    {
+        return $this->lft;
+    }
+
+    public function setLft(int $lft): self
+    {
+        $this->lft = $lft;
+
+        return $this;
+    }
+
+    public function getRgt(): ?int
+    {
+        return $this->rgt;
+    }
+
+    public function setRgt(int $rgt): self
+    {
+        $this->rgt = $rgt;
+
+        return $this;
     }
 
     public function getName(): ?string
@@ -55,7 +85,7 @@ class Brand
     {
         if (!$this->products->contains($product)) {
             $this->products[] = $product;
-            $product->setBrand($this);
+            $product->setCategory($this);
         }
 
         return $this;
@@ -65,8 +95,8 @@ class Brand
     {
         if ($this->products->removeElement($product)) {
             // set the owning side to null (unless already changed)
-            if ($product->getBrand() === $this) {
-                $product->setBrand(null);
+            if ($product->getCategory() === $this) {
+                $product->setCategory(null);
             }
         }
 

@@ -1,0 +1,12 @@
+.pagination > * {
+    padding-left: 1rem;
+}
+.pagination span a, .current {
+    font-size: 1.4rem;
+}
+span.page a, span.next a, span.previous a, span.first a, span.last a {
+    color: $gray-500;
+}
+.current {
+    color: $dark;
+}

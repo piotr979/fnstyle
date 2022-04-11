@@ -15,6 +15,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationController extends AbstractController
 {
+    /* This route is used for registeration. Is redirection from
+    ** customer-account route as it's need to be separated from login form.
+    */
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
@@ -23,13 +26,13 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
          
             $address = new Address();
             $address->setAddressLine1("");
             $address->setZipCode("");
             $address->setCityName("");
             $user->setAddress($address);
+            $user->setRoles(["ROLE_CUSTOMER"]);
             $user->setPassword(
             $userPasswordHasher->hashPassword(
                     $user,
@@ -39,7 +42,6 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->persist($address);
             $entityManager->flush();
-            // do anything else you need here, like send an email
             $this->addFlash('notice', 'Your account has been created.');
             return $this->redirectToRoute('home');
         }

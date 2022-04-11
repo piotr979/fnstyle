@@ -27,7 +27,7 @@ class Address
     #[ORM\Column(type: 'string', length: 255)]
     private $cityName;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
+    #[ORM\Column(type: 'string', length: 48, nullable: true)]
     private $phoneNumber;
 
     #[ORM\OneToMany(mappedBy: 'address', targetEntity: User::class)]
@@ -95,12 +95,12 @@ class Address
         return $this;
     }
 
-    public function getPhoneNumber(): ?int
+    public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
     }
 
-    public function setPhoneNumber(?int $phoneNumber): self
+    public function setPhoneNumber(?string $phoneNumber): self
     {
         $this->phoneNumber = $phoneNumber;
 

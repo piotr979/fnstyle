@@ -31,14 +31,14 @@ class CustomerController extends AbstractController
 
         $profileForm = $this->createForm(CustomerProfileType::class, $user);
         $profileForm->handleRequest($request);
-
+       
         if ($profileForm->isSubmitted() && $profileForm->isValid()) {
-            $data = $profileForm->getData();
-
-            dump($data);exit;
+            $userData = $profileForm->getData();
+            $em->persist($userData);
             $em->flush();
-            
+            $this->addFlash('notice','You profile has been updated');
         }
+
         return $this->render('customer/customer-profile.html.twig', [
             'profileForm' => $profileForm->createView()
         ]);

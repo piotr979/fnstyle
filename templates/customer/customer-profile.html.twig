@@ -1,40 +1,42 @@
-{% extends 'shop/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block body %}
 	<div class="container">
 		<div class="row">
             <h2 class="text-center my-4">Customer profile</h2>
         </div>
+		{{ form_start(profileForm) }}
 		<div class="row">
 			<div class="col-12 col-md-6">
-				{{ form_row(profileForm.firstName) }}
+				{{ form_row(profileForm.firstName, { 'required' : 'true' }) }}
 			</div>
 			<div class="col-12 col-md-6">
-				{{ form_row(profileForm.lastName) }}
+				{{ form_row(profileForm.lastName, { 'required': 'true' }) }}
 			</div>
 		</div>
 		<div class="row">
 		<div class="col-12 col-md-6">
-				{{ form_row(profileForm.addressLine1) }}
+				{{ form_row(profileForm.address.addressLine1) }}
 			</div>
 		<div class="col-12 col-md-6">
-				{{ form_row(profileForm.addressLine2) }}
+				{{ form_row(profileForm.address.addressLine2) }}
 			</div>
 		</div>
 		<div class="row">
+			<div class="col-8 col-md-6">
+				{{ form_row(profileForm.address.cityName) }}
+			</div>
 			<div class="col-4 col-md-2">
-				{{ form_row(profileForm.zipCode) }}
+				{{ form_row(profileForm.address.zipCode) }}
 			</div>
-			<div class="col-8 col-md-10">
-				{{ form_row(profileForm.city) }}
-			</div>
+		
 		</div>
         <div class="row">
 			<div class="col-12 col-md-6">
 				{{ form_row(profileForm.email)}}
                 </div>
                 	<div class="col-12 col-md-6">
-                	{{ form_row(profileForm.phone) }}
+                	{{ form_row(profileForm.address.phoneNumber) }}
 			</div>
 		</div>
 	

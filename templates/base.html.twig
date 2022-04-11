@@ -2,9 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 		<title>
 			{% block title %}Welcome to FnStyle
 			{% endblock %}
@@ -15,7 +13,6 @@
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
 		{% endblock %}
-
 		{% block javascripts %}
 			{{ encore_entry_script_tags('app') }}
 		{% endblock %}
@@ -31,7 +28,7 @@
 						{% endfor %}
 					</div>
 					<div class="top-logo col-8 col-md-4 order-0">
-					
+
 						<a href="{{ path('home') }}">
 							<h3 class="fw-bold">FNSTYLE</h3>
 						</a>
@@ -45,7 +42,6 @@
 					</div>
 
 					<div class="col-4 top-extras col-md-2 order-1 order-md-2">
-
 						<div class="top-extras__icons">
 							<a href="#">
 								<i class="bi-envelope"></i>
@@ -57,9 +53,7 @@
 								<i class="bi-globe"></i>
 							</a>
 						</div>
-
 					</div>
-
 				</div>
 			</div>
 			<nav class="navbar navbar-expand-lg navbar-light bg-light mt-2">
@@ -98,27 +92,27 @@
 									<i class="bi-cart me-1 user-access__icon"></i>Cart</a>
 							</li>
 							<li class="nav-item ms-lg-2">
-								 {% if is_granted("ROLE_ADMIN") %}
-								<a href="{{ path('catalog') }}" class="user-nav-mobile">
-									<i class="bi-person me-1 user-access__icon"></i>Admin page
-								</a>
-									{%  elseif is_granted("ROLE_USER") %}
-<a href="{{ path('customer_profile') }}" class="user-nav-mobile">
-									<i class="bi-person me-1 user-access__icon"></i>My account
-								</a>
-							
-								     {% else %} 
-									 <a href="{{ path('app_login') }}" class="user-nav-mobile">
-									<i class="bi-person me-1 user-access__icon"></i>Login&sol;Register
-								</a>
+								{% if is_granted("ROLE_ADMIN") %}
+									<a href="{{ path('catalog') }}" class="user-nav-mobile">
+										<i class="bi-person me-1 user-access__icon"></i>Admin page
+									</a>
+								{%  elseif is_granted("ROLE_USER") %}
+									<a href="{{ path('customer_profile') }}" class="user-nav-mobile">
+										<i class="bi-person me-1 user-access__icon"></i>My account
+									</a>
+
+								{% else %}
+									<a href="{{ path('app_login') }}" class="user-nav-mobile">
+										<i class="bi-person me-1 user-access__icon"></i>Login&sol;Register
+									</a>
 								{% endif %}
 								{% if is_granted("ROLE_USER") %}
-								<li class="nav-item ms-lg-2">
-	<a href="{{ path('app-logout') }}" class="user-nav-mobile text-secondary fw-bold">
-									<i class="bi-box-arrow-right me-1 user-access__icon"></i>Log out
-								</a>
-								
-								</li>
+									<li class="nav-item ms-lg-2">
+										<a href="{{ path('app_logout') }}" class="user-nav-mobile text-secondary fw-bold">
+											<i class="bi-box-arrow-right me-1 user-access__icon"></i>Log out
+										</a>
+
+									</li>
 								{% endif %}
 							</li>
 						</ul>
@@ -128,68 +122,70 @@
 			</nav>
 
 			{% block body %}{% endblock %}
-	
-		<footer class="bg-light mt-4 pt-4">
-			<div class="container">
-				<div class="row">
-					<div class="col-12 col-sm-6 col-md-3">
-						<h3 class="fw-bold">FNSTYLE</h3>
-						<small>Your fashion shop</small>
-						<img class="github-logo pt-4" src="{{ asset('assets/images/github-logo.svg') }}" alt="Github logo">
+
+			<footer class="bg-light mt-4 pt-4">
+				<div class="container">
+					<div class="row">
+						<div class="col-12 col-sm-6 col-md-3">
+							<h3 class="fw-bold">FNSTYLE</h3>
+							<small>Your fashion shop</small>
+							<img class="github-logo pt-4" src="{{ asset('assets/images/github-logo.svg') }}" alt="Github logo">
+						</div>
+						<div class="col-12 col-sm-6 col-md-3">
+							<p class="fw-bold">Information</p>
+
+							<ul class="list-unstyled footer-list">
+								<li>
+									<a class="text-secondary" href="#">About us</a>
+								</li>
+								<li>
+									<a class="text-secondary" href="#">Privacy policy</a>
+								</li>
+								<li>
+									<a class="text-secondary" href="#">Sales</a>
+								</li>
+								<li>
+									<a class="text-secondary" href="#">Terms &#38; Conditions</a>
+								</li>
+							</ul>
+						</div>
+
+						<div class="col-12 col-sm-6 col-md-3">
+							<p class="fw-bold">Account</p>
+
+							<ul class="list-unstyled footer-list">
+								<li>
+									<a class="text-secondary" href="#">My account</a>
+								</li>
+								<li>
+									<a class="text-secondary" href="#">My orders</a>
+								</li>
+								<li>
+									<a class="text-secondary" href="#">Wishlist</a>
+								</li>
+								<li>
+									<a class="text-secondary" href="#">Shipping</a>
+								</li>
+							</ul>
+						</div>
+
+						<div class="col-12 col-sm-6 col-md-3">
+							<p class="fw-bold">Need help?</p>
+							<p class="text-secondary mb-0">Contact us</p>
+							<div class="d-flex footer-contact align-items-end">
+								<i class="bi bi-phone fs-3"></i>
+								<h6>
+									<span class="text-decoration-underline fw-bold">+123 432 532</h6>
+								</div>
+								<small class="text-secondary d-block mt-2">Monday - Friday 9:00 - 20:00</small>
+								<p>
+									<small class="text-secondary">Saturday 11:00 - 14:00</small>
+								</p>
+							</div>
+						</div>
 					</div>
-					<div class="col-12 col-sm-6 col-md-3">
-						<p class="fw-bold">Information</p>
-
-						<ul class="list-unstyled footer-list">
-							<li>
-								<a class="text-secondary" href="#">About us</a>
-							</li>
-							<li>
-								<a class="text-secondary" href="#">Privacy policy</a>
-							</li>
-							<li>
-								<a class="text-secondary" href="#">Sales</a>
-							</li>
-							<li>
-								<a class="text-secondary" href="#">Terms &#38; Conditions</a>
-							</li>
-						</ul>
-					</div>
-
-					<div class="col-12 col-sm-6 col-md-3">
-						<p class="fw-bold">Account</p>
-
-						<ul class="list-unstyled footer-list">
-							<li>
-								<a class="text-secondary" href="#">My account</a>
-							</li>
-							<li>
-								<a class="text-secondary" href="#">My orders</a>
-							</li>
-							<li>
-								<a class="text-secondary" href="#">Wishlist</a>
-							</li>
-							<li>
-								<a class="text-secondary" href="#">Shipping</a>
-							</li>
-						</ul>
-					</div>
-
-	<div class="col-12 col-sm-6 col-md-3">
-						<p class="fw-bold">Need help?</p>
-
-            <p class="text-secondary mb-0">Contact us</p>
-            <div class="d-flex footer-contact align-items-end">
-              <i class="bi bi-phone fs-3"></i>
-              <h6><span class="text-decoration-underline fw-bold">+123 432 532</h6>
-              </div>
-              <small class="text-secondary d-block mt-2">Monday - Friday 9:00 - 20:00</small>
-              <p><small class="text-secondary">Saturday 11:00 - 14:00</small></p>
-          
-					</div>
-				</div>
-			</div>
-		</footer>
-		</main>
+				</footer>
+			</main>
+		</body>
 	</body>
 </html>

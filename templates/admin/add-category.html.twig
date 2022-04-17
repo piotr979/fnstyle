@@ -1,0 +1,20 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+	<section class="container">
+		{% include 'components/admin-header.html.twig' with {'heading' : 'Add category'} %}
+	
+	<form method="POST">
+		<label for="category-name">Category name</label>
+		<input type="text" name="category-name">
+		<select>
+			<option>Clothes</option>
+			<option>Beauty</option>
+			
+		</select>
+	</form>
+	</section>
+       
+
+
+{% endblock %}

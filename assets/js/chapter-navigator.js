@@ -5,9 +5,13 @@
  *  https://stackoverflow.com/a/46438472/1496972 
  */
 
+const sidebar = document.getElementById('navigator-sidebar');
+
 if (document.getElementById('navigator-check') != null) {
     if (window.matchMedia('(min-width: 80em').matches) {
         document.getElementById('navigator-check').checked = true;
+
+
     }
     window.addEventListener('resize', function () {
         if (window.matchMedia('(max-width: 80em)').matches) {

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Entity\Category;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\BrowserKit\Request;
@@ -60,13 +61,36 @@ class AdminController extends AbstractController
     #[Route('/settings/{page}/{class}', name: 'settings')]
     public function settings(int $page=1, string $class="Category", ManagerRegistry $doctrine): Response
     {
-        $paginatedItems = $doctrine->getRepository('App\\Entity\\' . $class)->
-            findWithPagination($page, $class);
+        $allItems = $doctrine->getRepository('App\\Entity\\' . $class)->
+            findAllWithParentPaginated($page, $class);
+         
+    
 
+      
         return $this->render('admin/settings.html.twig', [
-            'items' => $paginatedItems,
+            'items' => $allItems,
             'classItem' => $class,
             'page' => $page
         ]);
+    }
+    #[Route('/category-save/{id}/{name}', name: 'category_save')]
+    public function saveCategory(int $id, string $name, ManagerRegistry $doctrine)
+    {
+        $em = $doctrine->getManager();
+        $category = $doctrine->getRepository(Category::class)->find($id);
+
+        if (!$category) {
+            throw $this->createNotFoundException(
+                'No category found for id' . $id
+            );
+        }
+        $category->setName($name);
+        $em->flush();
+        return $this->redirectToRoute('settings');
+    }
+    #[Route('/category-add', name: 'category_add')]
+    public function addCategory()
+    {
+        return $this->render('admin/add-category.html.twig');
     }
 }

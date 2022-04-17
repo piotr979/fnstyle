@@ -88,6 +88,9 @@ label #close-sidebar {
   #navigator-check:checked ~ .navigator-sidebar {
     left: 0;
   }
+  .navigator-sidebar {
+    transition: none;
+  }
 }
 @media screen and (min-width: 100em) {
   .navigator-text--container {

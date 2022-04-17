@@ -27,6 +27,11 @@ class Category
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class)]
     private $products;
 
+    #[ORM\Column(type: 'boolean', options: ["default" => true ])]
+    private    $removable;
+
+    private $parentCategory;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
@@ -101,5 +106,25 @@ class Category
         }
 
         return $this;
+    }
+
+    public function getRemovable(): ?bool
+    {
+        return $this->removable;
+    }
+
+    public function setRemovable(bool $removable): self
+    {
+        $this->removable = $removable;
+
+        return $this;
+    }
+    public function getParentCategory()
+    {
+        return $this->parentCategory;
+    }
+    public function setParentCategory($parentCategory)
+    {
+        $this->parentCategory = $parentCategory;
     }
 }

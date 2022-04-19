@@ -19,10 +19,27 @@
 
 				<p class="mb-0">Select tab: &nbsp;</p>
 				<select id="page-switcher">
+				
 					<option value="Category">Categories</option>
-					<option value="Size">Sizes</option>
-					<option value="Color">Colors</option>
-					<option value="Brand">Brands</option>
+				
+					<option value="Size" 
+
+						{% if classItem == 'Size' %}
+					selected
+					{% endif %}
+					>Sizes</option>
+					
+					<option value="Color"
+					{% if classItem == 'Color' %}
+					selected
+					{% endif %}
+					>Colors</option>
+
+					<option value="Brand"
+					{% if classItem == 'Brand' %}
+					selected
+					{% endif %}
+					>Brands</option>
 				</select>
 			</div>
 		</div>
@@ -54,13 +71,16 @@
 									{% set count = count + 1 %}
 
 									{# Action buttons for mobile only #}
-									<td class="d-sm-none">
-										<button class="btn-trash">
+								<td class="d-sm-none" data-feed="{{ item.name }}" data-id="{{ item.id }}" data-type="category">
+									
+										<button class="editButton btn-trash">
 											<i class="bi bi-pencil-square"></i>
 										</button>
-										<button class="btn-trash">
+									
+										<a href="#" class="btn-trash">
 											<i class="bi bi-trash"></i>
-										</button>
+										</a>
+
 									</td>
 									{# Action btns mobile ends here #}
 
@@ -123,12 +143,13 @@
 
 									{# Action buttons for mobile only #}
 									<td class="d-sm-none">
-										<button class="btn-trash">
+										<button class="editButton btn-trash">
 											<i class="bi bi-pencil-square"></i>
 										</button>
-										<button class="btn-trash">
+									
+										<a href="#" class="btn-trash">
 											<i class="bi bi-trash"></i>
-										</button>
+										</a>
 									</td>
 									{# Action btns mobile ends here #}
 
@@ -185,7 +206,8 @@
 		{{ parent() }}
 		<script>
 			document.addEventListener("DOMContentLoaded", function () {
-
+let feedType = '';
+let id = 0;
 const modal = document.getElementById("modal");
 const editBtns = document.querySelectorAll(".editButton");
 const catInput = document.getElementById("category-input");
@@ -198,32 +220,35 @@ editBtns.forEach((button) => button.addEventListener('click', function (e) {
 const dataSet = e.target.parentNode.parentNode.dataset;
 console.log(dataSet);
 id = dataSet.id;
+feedType = dataSet.type;
+console.log(feedType);
 catInput.setAttribute('value', dataSet.feed);
 modal.style.display = "block";
 }));
 
 /* Modal buttons Ok and Cancel */
 okBtn.addEventListener('click', function () {
-const catName = catInput.value;
-if (catName == null || catName == '') {
+const feedName = catInput.value;
+if (feedName == null || feedName == '') {
 const modalError = document.getElementById('modal-error');
 modalError.innerText = "Input field is empty";
 return;
 }
-location.href = `/admin/category-save/${id}/${catName}`;
+	switch (feedType) {
+		case 'category':
+		location.href = `/admin/category-save/${id}/${feedName}`;
+		break;
+		case 'size':
+		location.href = `/admin/size-save/${id}/${feedName}`;
+		break;
+		default:
+		location.href = '/admin';
+	}
+
 })
 cancelBtn.addEventListener('click', function () {
 modal.style.display = "none";
 })
-
-const itemRows = document.querySelectorAll('.item-row');
-itemRows.forEach(row => {
-row.addEventListener('click', function (e) {
-const dataSet = e.target.parentNode.dataset;
-console.log(dataSet);
-});
-})
-
 
 const pageSwitcher = document.getElementById('page-switcher');
 pageSwitcher.addEventListener('click', switchPage);

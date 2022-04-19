@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Entity\Category;
+use App\Entity\Size;
 use App\Form\CategoryFormType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -64,10 +65,7 @@ class AdminController extends AbstractController
     {
         $allItems = $doctrine->getRepository('App\\Entity\\' . $class)->
             findAllPaginated($page, $class);
-         
-    
-
-      
+        
         return $this->render('admin/settings.html.twig', [
             'items' => $allItems,
             'classItem' => $class,
@@ -87,8 +85,30 @@ class AdminController extends AbstractController
         }
         $category->setName($name);
         $em->flush();
-        return $this->redirectToRoute('settings');
+        return $this->redirectToRoute('settings', [
+            'page' => 1,
+            'class' => 'Category'
+        ]);
     }
+    #[Route('/size-save/{id}/{sizeName}', name: 'size_save')]
+    public function saveSize(int $id, string $sizeName, ManagerRegistry $doctrine)
+    {
+        $em = $doctrine->getManager();
+        $size = $doctrine->getRepository(Size::class)->find($id);
+
+        if (!$size) {
+            throw $this->createNotFoundException(
+                'No size found for id' . $id
+            );
+        }
+        $size->setSize($sizeName);
+        $em->flush();
+        return $this->redirectToRoute('settings', [
+            'page' => 1,
+            'class' => 'Size'
+        ]);
+    }
+    
     #[Route('/category-add', name: 'category_add')]
     public function addCategory(ManagerRegistry $doctrine, Request $request)
     {

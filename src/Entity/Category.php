@@ -28,7 +28,7 @@ class Category
     private $products;
 
     #[ORM\Column(type: 'boolean', options: ["default" => true ])]
-    private    $removable;
+    private $removable;
 
     private $parentCategory;
 

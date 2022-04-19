@@ -23,6 +23,7 @@ class CategoryRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {
         parent::__construct($registry, Category::class);
+        $this->conn = $this->getEntityManager()->getConnection();
         $this->paginator = $paginator;
     }
 
@@ -49,9 +50,9 @@ class CategoryRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
+    /* NOT IN USE */
     public function findWithPagination(int $page, string $class)
     {
-        $conn = $this->getEntityManager()->getConnection();
         $qb = $this->createQueryBuilder('c')
             ->select('c.name, c.id, c.lft, c.rgt')
             ->where('c.removable = true')
@@ -65,42 +66,37 @@ class CategoryRepository extends ServiceEntityRepository
             return null;
         }
     }
-    public function findWithPaginationAndParent(int $page, string $class)
+
+    public function findAllPaginated(int $page)
     {
-        $conn = $this->getEntityManager()->getConnection();
-        $qb = $this->createQueryBuilder('c')
-            ->getQuery()
-            ->getResult()
-            ;
-        if (isset($qb)) {
-            $paginated = $this->paginator->paginate($qb, $page, 10);
-            return $paginated;
-        } else {
-            return null;
-        }
-    }
-    public function findAllWithParentPaginated(int $page)
-    {
-     $conn = $this->getEntityManager()->getConnection();
     $sql = '
     SELECT id,name, (SELECT name
          FROM category t2
-               WHERE t2.lft < t1.lft AND t2.rgt > t1.rgt    
+               WHERE t2.lft < node.lft AND t2.rgt > node.rgt    
              LIMIT 1  
              ) AS parent
-      FROM category t1;
+      FROM category node;
     ';
-
-    $stmt = $conn->prepare($sql);
-    
+    $stmt = $this->conn->prepare($sql);
     $resultSet = $stmt->executeQuery();
     return $this->paginator->paginate($resultSet->fetchAllAssociative(), $page, 10);
-
-    dump($resultSet->fetchAllAssociative());exit;
     }
+
+    /* NOT IN USE */
+    public function getAllParents()
+    {
+        $qb = $this->createQueryBuilder('c')
+        ->select('c.name, c.lft, c.rgt')
+        ->where('c.lft != (c.rgt - 1)')
+        ->getQuery()
+        ->getResult()
+        ;
+        return $qb;
+    }
+
+    
    public function findSinglePathWithParent(string $category)
    {
-    $conn = $this->getEntityManager()->getConnection();
     $qb = $this->getEntityManager()->createQueryBuilder();
 
         $qb->select('parent.name')
@@ -134,6 +130,45 @@ class CategoryRepository extends ServiceEntityRepository
             
             return $qb;
     }
+    public function addNewCategoryIntoExisting($existingParentCategory, $name)
+    {
+        $sql = "
+        LOCK TABLES category WRITE;
+        SELECT @myLeft := lft FROM category
+        WHERE name = :exisitingParentCategory;
+    UPDATE category SET rgt = rgt + 2 WHERE rgt > @myLeft;
+    UPDATE category SET lft = lft + 2 WHERE lft > @myLeft;
+        INSERT INTO category(name, lft, rgt, removable) VALUES( :newCatName,  @myLeft + 1, @myLeft + 2, true);
+        UNLOCK TABLES;
+
+        ";
+        $stmt = $this->conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(
+            ['exisitingParentCategory' => $existingParentCategory,
+            'newCatName' => $name
+                    ]);
+    }
+    public function addNewCategoryAfterExisting($existingParentCategory, $name)
+    {
+        $sql = "
+            LOCK TABLES category WRITE;
+            SELECT @myRight := rgt FROM category
+            WHERE name = :existingParentCategory;
+            UPDATE category SET rgt = rgt + 2 WHERE rgt > @myRight;
+            UPDATE category SET lft = lft + 2 WHERE lft > @myRight;
+            INSERT INTO category(name, lft, rgt, removable) VALUES( :newCatName, @myRight + 1, @myRight + 2, true);
+
+            UNLOCK TABLES;
+
+        ";
+        $stmt = $this->conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(
+            ['exisitingParentCategory' => $existingParentCategory,
+            'newCatName' => $name
+                    ]);
+    }
+
+    
 
     // }
     // /**

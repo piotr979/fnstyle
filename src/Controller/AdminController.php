@@ -4,9 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Entity\Category;
+use App\Form\CategoryFormType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\BrowserKit\Request;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -62,7 +63,7 @@ class AdminController extends AbstractController
     public function settings(int $page=1, string $class="Category", ManagerRegistry $doctrine): Response
     {
         $allItems = $doctrine->getRepository('App\\Entity\\' . $class)->
-            findAllWithParentPaginated($page, $class);
+            findAllPaginated($page, $class);
          
     
 
@@ -89,8 +90,20 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('settings');
     }
     #[Route('/category-add', name: 'category_add')]
-    public function addCategory()
+    public function addCategory(ManagerRegistry $doctrine, Request $request)
     {
-        return $this->render('admin/add-category.html.twig');
+        $category = new Category();
+        $categoryForm = $this->createForm(CategoryFormType::class, $category);
+        $categoryForm->handleRequest($request);
+        if ($categoryForm->isSubmitted() && $categoryForm->isValid()) {
+            /* need to insert between existing data */
+            $data = $categoryForm->getData();
+           $doctrine->getRepository(Category::class)->addNewCategoryIntoExisting($data->getParentCategory(), $data->getName());
+            $this->addFlash('notice','New category inserted.');
+            return $this->redirectToRoute('settings');
+        }
+        return $this->render('admin/add-category.html.twig', [
+            'categoryForm' => $categoryForm->createView()
+        ]);
     }
 }

@@ -55,7 +55,6 @@ class CategoryFixture extends Fixture
               $category, $values[0], $values[1], $values[2] ?? true
           ));
       }
-        $manager->persist($this->createCategory('electronic',2,3));
     $manager->flush();
         // $product = new Product();
         // $manager->persist($product);

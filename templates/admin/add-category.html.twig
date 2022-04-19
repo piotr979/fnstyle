@@ -3,18 +3,13 @@
 {% block body %}
 	<section class="container">
 		{% include 'components/admin-header.html.twig' with {'heading' : 'Add category'} %}
+	<div class="row mt-4">
+		<div class="col-12 col-md-6 col-xl-4">
+			{{ form(categoryForm) }}
+		</div>
+	</div>
 	
-	<form method="POST">
-		<label for="category-name">Category name</label>
-		<input type="text" name="category-name">
-		<select>
-			<option>Clothes</option>
-			<option>Beauty</option>
-			
-		</select>
-	</form>
-	</section>
        
 
-
+	</section>
 {% endblock %}

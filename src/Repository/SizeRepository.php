@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @method Size|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,9 +17,13 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SizeRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $conn;
+    private PaginatorInterface $paginator;
+    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {
         parent::__construct($registry, Size::class);
+        $this->conn = $this->getEntityManager()->getConnection();
+        $this->paginator = $paginator;
     }
 
     /**
@@ -44,7 +49,19 @@ class SizeRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-
+    public function findAllPaginated(int $page) 
+    {
+        $qb = $this->createQueryBuilder('s')
+            ->getQuery()
+            ->getResult()
+            ;
+        if (isset($qb)) {
+            $paginated = $this->paginator->paginate($qb, $page, 10);
+            return $paginated;
+        } else {
+            return null;
+        }
+    }
     // /**
     //  * @return Size[] Returns an array of Size objects
     //  */

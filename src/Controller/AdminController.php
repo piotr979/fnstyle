@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Entity\Category;
+use App\Entity\Color;
 use App\Entity\Size;
 use App\Form\CategoryFormType;
 use Doctrine\Persistence\ManagerRegistry;
@@ -11,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Form\ColorType;
 
 #[Route('admin')]
 class AdminController extends AbstractController
@@ -25,7 +27,6 @@ class AdminController extends AbstractController
         defaults: ['sorting' => 'name_desc', 'page' => 1, 'category' => 'all'])]
     public function index(int $page, string $category, string $sorting, ManagerRegistry $doctrine): Response
     {
-
         $repo = $doctrine->getRepository(Product::class);
         $products = $repo->findAllPaginated(
             $page,
@@ -65,50 +66,48 @@ class AdminController extends AbstractController
     {
         $allItems = $doctrine->getRepository('App\\Entity\\' . $class)->
             findAllPaginated($page, $class);
-        
         return $this->render('admin/settings.html.twig', [
             'items' => $allItems,
             'classItem' => $class,
             'page' => $page
         ]);
     }
-    #[Route('/category-save/{id}/{name}', name: 'category_save')]
-    public function saveCategory(int $id, string $name, ManagerRegistry $doctrine)
+    #[Route('/item-save/{id}/{name}/{class}', name: 'item_save')]
+    public function itemCategory(int $id, string $name, string $class, ManagerRegistry $doctrine)
     {
         $em = $doctrine->getManager();
-        $category = $doctrine->getRepository(Category::class)->find($id);
+            $item = $doctrine->getRepository('App\\Entity\\' . $class)->find($id);
 
-        if (!$category) {
-            throw $this->createNotFoundException(
-                'No category found for id' . $id
-            );
-        }
-        $category->setName($name);
-        $em->flush();
+                if (!$item) {
+                    throw $this->createNotFoundException(
+                        'Item not found. Id number' . $id
+                    );
+                }
+                switch ($class) {
+                    case 'Category': {
+                        $item->setName($name);
+                        break;
+                    }
+                    case 'Size': {
+                        $item->setSize($name);
+                        break;
+                    }
+                    case 'Brand': {
+                        $item->setName($name);
+                        break;
+                    }
+                    case 'Color': {
+                        $item->setName($name);
+                        break;
+                    }
+                }
+              
+                $em->flush();
         return $this->redirectToRoute('settings', [
             'page' => 1,
-            'class' => 'Category'
+            'class' => $class
         ]);
     }
-    #[Route('/size-save/{id}/{sizeName}', name: 'size_save')]
-    public function saveSize(int $id, string $sizeName, ManagerRegistry $doctrine)
-    {
-        $em = $doctrine->getManager();
-        $size = $doctrine->getRepository(Size::class)->find($id);
-
-        if (!$size) {
-            throw $this->createNotFoundException(
-                'No size found for id' . $id
-            );
-        }
-        $size->setSize($sizeName);
-        $em->flush();
-        return $this->redirectToRoute('settings', [
-            'page' => 1,
-            'class' => 'Size'
-        ]);
-    }
-    
     #[Route('/category-add', name: 'category_add')]
     public function addCategory(ManagerRegistry $doctrine, Request $request)
     {
@@ -124,6 +123,60 @@ class AdminController extends AbstractController
         }
         return $this->render('admin/add-category.html.twig', [
             'categoryForm' => $categoryForm->createView()
+        ]);
+    }
+    #[Route('/item-add/{class}', name: 'item_add')]
+    public function itemAdd($class, Request $request, ManagerRegistry $doctrine)
+    {
+        if ($class == 'Category') {
+            return $this->redirectToRoute('category_add');
+        }
+        $itemObject = 'App\\Entity\\' . $class;
+        $item = new $itemObject;
+        $form = $this->createForm( 'App\\Form\\' . $class . 'Type', $item);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $doctrine->getManager();
+
+            /* It's kind of generic "getName" call, common for Brand,Color,Size */
+            $name = $form->getData()->getName();
+            $item->setName($name);
+            $em->persist($item);
+            $em->flush();
+            $this->addFlash(
+               'notice',
+               'Item added'
+            );
+            return $this->redirectToRoute('settings', [
+                'page' => 1,
+                'class' => $class
+            ]);
+        }
+        return $this->render('admin/add-item.html.twig', [
+            'classItem' => $class,
+            'form' => $form->createView()
+        ]);
+    }
+    #[Route('/add-color', name: 'add_color')]
+    public function addColor()
+    {
+        $color = new Color();
+        $form = $this->createForm(ColorType::class, $color);
+        return $this->render('admin/add-item.html.twig',[
+            'classItem' => 'item',
+            'form' => $form->createView()
+        ]);
+    }
+    #[Route('/remove-item/{id}/{class}', name: 'remove_item')]
+    public function removeItem($id, $class,  ManagerRegistry $doctrine)
+    {
+        $em = $doctrine->getManager();
+        $item = $doctrine->getRepository('App\\Entity\\' . $class)->find($id);
+        $em->remove($item);
+        $em->flush();
+        return $this->redirectToRoute('settings', [
+            'page' => 1,
+            'class' => $class
         ]);
     }
 }

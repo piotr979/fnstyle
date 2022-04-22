@@ -2,14 +2,13 @@
 
 {% block body %}
 	<section class="container">
-		{% include 'admin/components/admin-header.html.twig' with {'heading' : 'Add category'} %}
+		{% include 'admin/components/admin-header.html.twig' with {'heading' : 'Add new ' ~ classItem } %}
 	<div class="row mt-4">
 		<div class="col-12 col-md-6 col-xl-4">
-			{{ form(categoryForm) }}
+		{{ form(form)}}
 		</div>
 	</div>
-	
-       
 
+	
 	</section>
 {% endblock %}

@@ -10,7 +10,7 @@
 
 @import 'components/buttons';
 @import 'components/mini-item';
-@import 'components/modal';
+//@import 'components/modal';
 @import 'components/image-button';
 @import 'components/price-range';
 @import 'components/search-top';
@@ -46,6 +46,10 @@ body {
 }
 .font-smaller {
     font-size: 0.9rem;
+}
+/* Little trick for annoying color form issue */
+form[name="color"] input[type="color"] {
+    display: none !important;
 }
 $baseBorderRadius: 0;
 @import 'base/queries';

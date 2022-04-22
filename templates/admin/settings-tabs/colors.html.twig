@@ -1,0 +1,37 @@
+<div class="row">
+	<div class="col">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col" class="d-table-cell">#</th>
+					<th scope="col" class="d-table-cell">Size</th>
+					<th scope="col" class="d-table-cell">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% set count = 1 %}
+				{% for item in items %}
+                	{% import 'admin/components/macro-delete-modal.html.twig' as macro %}
+					<tr class="item-row">
+						<th class="d-table-cell" scope="row">{{ count }}</th>
+						
+                        {% set count = count + 1 %}
+						<td class="d-table-cell">
+							{{ item.name }}
+						</td>
+						<td class="d-table-cell" data-feed="{{ item.name }}" data-id="{{ item.id }}" data-type="Color">
+							<button class="editButton btn-trash" data-bs-toggle="modal" data-bs-target="#editModal">
+								<i class="bi bi-pencil-square"></i>
+							</button>
+							<button class="btn-trash" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ item.id }}">
+								<i class="bi bi-trash"></i>
+							</button>
+                            {{ macro.create_delete_modal(item.id,
+		                        path('remove_item', { 'id': item.id, 'class': classItem })) }}
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>

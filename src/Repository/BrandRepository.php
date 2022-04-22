@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @method Brand|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,9 +17,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BrandRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private PaginatorInterface $paginator;
+
+    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {
         parent::__construct($registry, Brand::class);
+        $this->paginator = $paginator;
     }
 
     /**
@@ -45,6 +49,19 @@ class BrandRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAllPaginated(int $page) 
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->getQuery()
+            ->getResult()
+            ;
+        if (isset($qb)) {
+            $paginated = $this->paginator->paginate($qb, $page, 10);
+            return $paginated;
+        } else {
+            return null;
+        }
+    }
     // /**
     //  * @return Brand[] Returns an array of Brand objects
     //  */

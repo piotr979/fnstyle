@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @method Color|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,9 +17,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ColorRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private PaginatorInterface $paginator;
+    
+    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {
         parent::__construct($registry, Color::class);
+        $this->paginator = $paginator;
     }
 
     /**
@@ -44,7 +48,19 @@ class ColorRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-
+    public function findAllPaginated(int $page) 
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->getQuery()
+            ->getResult()
+            ;
+        if (isset($qb)) {
+            $paginated = $this->paginator->paginate($qb, $page, 10);
+            return $paginated;
+        } else {
+            return null;
+        }
+    }
     // /**
     //  * @return Color[] Returns an array of Color objects
     //  */

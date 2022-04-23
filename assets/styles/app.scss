@@ -47,6 +47,12 @@ body {
 .font-smaller {
     font-size: 0.9rem;
 }
+.mobile-slice {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
 /* Little trick for annoying color form issue */
 form[name="color"] input[type="color"] {
     display: none !important;

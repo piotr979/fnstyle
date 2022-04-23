@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\Entity\Category;
 use App\Entity\Color;
 use App\Entity\Size;
+use App\Entity\User;
 use App\Form\CategoryFormType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\ColorType;
+use App\Form\CustomerProfileType;
 
 #[Route('admin')]
 class AdminController extends AbstractController
@@ -23,6 +25,8 @@ class AdminController extends AbstractController
     {
         return $this->redirectToRoute('catalog');
     }
+
+    // Displays main page (catalog)
     #[Route('/catalog/{page}/{category}/{sorting}', name: 'catalog',
         defaults: ['sorting' => 'name_desc', 'page' => 1, 'category' => 'all'])]
     public function index(int $page, string $category, string $sorting, ManagerRegistry $doctrine): Response
@@ -38,29 +42,54 @@ class AdminController extends AbstractController
         ]);
     }
 
+    // Adding new product (clothes, beauty, etc.)
     #[Route('/add-product', name: 'add_product')]
     public function addProduct()
     {
         return $this->render('admin/add-product.html.twig');
     }
+
+    // Edit product
     #[Route('/edit-product/{id}', name: 'edit-product')]
     public function editItem($id): Response
     {
         return $this->render('admin/edit-item.html.twig');
     }
 
-    #[Route('/customers', name: 'customers')]
-    public function users(): Response
+    // List of all customers 
+    #[Route('/customers/{page}/{search}/{sorting}', name: 'customers',
+        defaults: ['sorting' => 'name_desc', 'page' => 1, 'search' => ''])]
+    public function getCustomers(int $page, string $search, string $sorting, ManagerRegistry $doctrine): Response
     {
-        return $this->render('admin/customers.html.twig');
+        $customers = $doctrine->getRepository(User::class)->findAllPaginated(
+            $page,
+            $search,
+            $sorting
+        );
+        return $this->render('admin/customers.html.twig', [
+            'customers' => $customers
+        ]);
     }
 
+    // Edit customer
     #[Route('/edit-customer/{id}', name: 'edit-customer')]
-    public function editCustomer($id): Response
+    public function editCustomer($id, Request $request, ManagerRegistry $doctrine): Response
     {
-        return $this->render('admin/edit-customer.html.twig');
+        $user = $doctrine->getRepository(User::class)->find($id);
+
+        $profileForm = $this->createForm(CustomerProfileType::class, $user);
+        $profileForm->handleRequest($request);
+
+        if ($profileForm->isSubmitted() && $profileForm->isValid()) {
+            dump('done');
+        }
+
+        return $this->render('admin/edit-customer.html.twig', [
+            'profileForm' => $profileForm->createView()
+        ]);
     }
 
+    // Displays settings of colors,brands,sizes tabs
     #[Route('/settings/{page}/{class}', name: 'settings')]
     public function settings(int $page=1, string $class="Category", ManagerRegistry $doctrine): Response
     {
@@ -72,6 +101,8 @@ class AdminController extends AbstractController
             'page' => $page
         ]);
     }
+
+    // Save the color,brand,size,etc.
     #[Route('/item-save/{id}/{name}/{class}', name: 'item_save')]
     public function itemCategory(int $id, string $name, string $class, ManagerRegistry $doctrine)
     {
@@ -83,6 +114,9 @@ class AdminController extends AbstractController
                         'Item not found. Id number' . $id
                     );
                 }
+                /* Altough looks same keep it in separate cases
+                as it may be extended in future
+                */
                 switch ($class) {
                     case 'Category': {
                         $item->setName($name);
@@ -108,6 +142,8 @@ class AdminController extends AbstractController
             'class' => $class
         ]);
     }
+
+    // Adds new category (form)
     #[Route('/category-add', name: 'category_add')]
     public function addCategory(ManagerRegistry $doctrine, Request $request)
     {
@@ -125,6 +161,8 @@ class AdminController extends AbstractController
             'categoryForm' => $categoryForm->createView()
         ]);
     }
+
+    // Adds new brand, size,color (form)
     #[Route('/item-add/{class}', name: 'item_add')]
     public function itemAdd($class, Request $request, ManagerRegistry $doctrine)
     {
@@ -157,16 +195,8 @@ class AdminController extends AbstractController
             'form' => $form->createView()
         ]);
     }
-    #[Route('/add-color', name: 'add_color')]
-    public function addColor()
-    {
-        $color = new Color();
-        $form = $this->createForm(ColorType::class, $color);
-        return $this->render('admin/add-item.html.twig',[
-            'classItem' => 'item',
-            'form' => $form->createView()
-        ]);
-    }
+
+    // Removes brand, color, size
     #[Route('/remove-item/{id}/{class}', name: 'remove_item')]
     public function removeItem($id, $class,  ManagerRegistry $doctrine)
     {
@@ -174,6 +204,16 @@ class AdminController extends AbstractController
         $item = $doctrine->getRepository('App\\Entity\\' . $class)->find($id);
         $em->remove($item);
         $em->flush();
+        switch ($class) {
+            case 'User':
+                $this->addFlash(
+                   'notice',
+                   'Customer has been removed.'
+                );
+                return $this->redirectToRoute('customers');
+            default: 
+                return $this->redirectToRoute('/admin');
+        }
         return $this->redirectToRoute('settings', [
             'page' => 1,
             'class' => $class

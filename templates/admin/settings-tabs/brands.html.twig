@@ -11,7 +11,7 @@
 			<tbody>
 				{% set count = 1 %}
 				{% for item in items %}
-                	{% import 'admin/components/macro-delete-modal.html.twig' as macro %}
+                	{% import 'admin/macros/macro-delete-modal.html.twig' as macro %}
 					<tr class="item-row">
 						<th class="d-table-cell" scope="row">{{ count }}</th>
 						
@@ -20,7 +20,7 @@
 							{{ item.name }}
 						</td>
 						<td class="d-table-cell" data-feed="{{ item.name }}" data-id="{{ item.id }}" data-type="Brand">
-							<button class="editButton btn-trash" data-bs-toggle="modal" data-bs-target="#editModal">
+							<button class="editButton btn-icon" data-bs-toggle="modal" data-bs-target="#editModal">
 								<i class="bi bi-pencil-square"></i>
 							</button>
 							<button class="btn-trash" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ item.id }}">

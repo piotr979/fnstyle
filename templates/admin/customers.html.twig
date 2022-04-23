@@ -5,6 +5,9 @@
 	<section class="container">
 		<div class="row ms-3 ms-sm-2 ms-md-0">
 			<div class="col ps-0">
+
+			{% include('admin/components/display-flashes.html.twig') %}
+
 				<h2 class="fw-bold">Customers list</h2>
 			</div>
 		</div>
@@ -16,7 +19,6 @@
 			'customers': '432'
 		}  %}
 		{# ENDS STATS #}
-
 		<div class="row mt-4 mb-2">
 			<div class="col">
 				<div class="top-search">
@@ -32,43 +34,54 @@
 					<thead>
 						<tr>
 							<th scope="col" class="d-none d-sm-table-cell">#</th>
-							<th scope="col" class="d-sm-none">Act.</th>
 							<th scope="col">Email</th>
 							<th scope="col" class="d-none d-md-table-cell">F. name</th>
 							<th scope="col" class="d-none d-sm-table-cell">Last name</th>
-							<th scope="col" class="d-none d-sm-table-cell">Actions</th>
+							<th scope="col" class="d-table-cell">Actions</th>
 						</tr>
 					</thead>
 
 					<tbody>
+						{% for customer in customers %}
+							{% import 'admin/macros/macro-delete-modal.html.twig' as del_macro %}
+							{% import 'admin/macros/macro-confirm-modal.html.twig' as con_macro %}
 						<tr>
 							<th class="d-none d-sm-table-cell" scope="row">1</th>
-							<td class="d-sm-none">
-							<a class="btn-trash">
-									<i class="bi bi-pencil-square"></i>
-								</a>
-
-								<button class="btn-trash">
-									<i class="bi bi-trash"></i>
-								</button>
-							</td>
-							<td>Abra@wp.gom</td>
+							<td class="mobile-slice">{{ customer.email }}</td>
 							<td class="d-none d-md-table-cell">
-								John
+								{{ customer.firstName }}
 							</td>
-							<td class="d-none d-sm-table-cell">Washington</td>
-							<td class="d-none d-sm-table-cell">
-								<a href="{{ path('edit-customer', { id: '1' } ) }}" class="btn-trash">
+							<td class="d-none d-sm-table-cell">{{ customer.LastName }}</td>
+							<td class="d-table-cell">
+								<a href="{{ path('edit-customer', { id: customer.id } ) }}" class="btn-icon">
 									<i class="bi bi-pencil-square"></i>
 								</a>
-								<button class="btn-trash">
-									<i class="bi bi-trash"></i>
+								<button class="btn-trash" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ customer.id }}">
+								<i class="bi bi-trash"></i>
 								</button>
+								 {{ del_macro.create_delete_modal(customer.id,
+		                        path('remove_item', { 'id': customer.id, 'class': 'User' })) }}
+								<button class="btn-icon" data-bs-toggle="modal" data-bs-target="#resetPasswordModal-{{ customer.id }}">
+								<i class="bi bi-shuffle"></i>
 
+							</button>
+							 
+							 {{ con_macro.confirm_modal(customer.id,
+		                        path('reset_password', { 'id': customer.id }), 'Reset password?') }}
+                          
 							</td>
 						</tr>
+						{% endfor %}
 					</tbody>
 			</table>
 		</div>
+
 		</div>
+	{# #### PAGINATION CONTROLS STARTS HERE ### #}
+				{% if customers is not null %}
+					<div class="d-flex justify-content-center mt-0 my-3 mt-md-5">
+						{{ knp_pagination_render(customers) }}
+					</div>
+				{% endif %}
+				{# #####  PAGINATION CONTROLS ENDS HERE ##### #}
 </section>{% endblock %}

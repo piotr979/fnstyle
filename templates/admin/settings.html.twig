@@ -4,12 +4,8 @@
 	<section class="container">
 		<div class="row ms-3 ms-sm-2 ms-md-0">
 			<div class="col ps-0">
-				{% for flash in app.flashes('notice') %}
-				<div class="alert alert-success" role="alert">
-				
-						{{ flash }}
-				</div>
-				{% endfor %}
+			
+				{% include('admin/components/display-flashes.html.twig') %}
 
 				<h2 class="fw-bold">Settings</h2>
 				<p>Miscellaneous</p>
@@ -46,7 +42,6 @@
 				{% if items is not null %}
 					<div class="d-flex justify-content-center mt-0 my-3 mt-md-5">
 						{{ knp_pagination_render(items) }}
-
 					</div>
 				{% endif %}
 				{# #####  PAGINATION CONTROLS ENDS HERE ##### #}
@@ -56,7 +51,7 @@
 				</div>
 
 				{# ****** MODALS STARTS HERE ******* #}
-				{% import 'admin/components/macro-edit-modal.html.twig' as macro %}
+				{% import 'admin/macros/macro-edit-modal.html.twig' as macro %}
 				{{ macro.edit_item_modal() }}
 				{# ****** MODALS ENDS HERE ******* #}
 

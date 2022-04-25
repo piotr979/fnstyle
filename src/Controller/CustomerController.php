@@ -14,6 +14,7 @@ use App\Security\CustomerAuthenticator;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class CustomerController extends AbstractController

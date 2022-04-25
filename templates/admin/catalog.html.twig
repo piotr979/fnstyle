@@ -12,28 +12,13 @@
 			</div>
 		</div>
 
-		<div class="row">
-			<div class="col-12 col-sm-4 my-4">
-				<div class="info-block-1 d-flex flex-column text-center">
-					<p class="text-light my-1">Items sold total</p>
-					<h3 class="text-light fw-bold">1368</h3>
-				</div>
-			</div>
-
-			<div class="col-12 col-sm-4 my-4">
-				<div class="info-block-2 d-flex flex-column text-center">
-					<p class="text-light my-1">Sold products of</p>
-					<h3 class="text-light fw-bold">$154.234,23</h3>
-				</div>
-			</div>
-
-			<div class="col-12 col-sm-4 my-4">
-				<div class="info-block-3 d-flex flex-column text-center">
-					<p class="text-light my-1">Customers total</p>
-					<h3 class="text-light fw-bold">1243</h3>
-				</div>
-			</div>
-		</div>
+		{# STATS GO HERE #}
+		{% include 'admin/components/stats.html.twig' with {
+			'sold_items': '1999',
+			'sold_total': '154.234,23',
+			'customers': '432'
+		}  %}
+		{# ENDS STATS #}
 
 		<div class="row mt-4 mb-2">
 			<div class="col">
@@ -52,7 +37,8 @@
 						<tr>
 							<th scope="col" class="d-none d-sm-table-cell">#</th>
 							<th scope="col" class="d-sm-none">Act.</th>
-							<th scope="col">Product</th>
+							<th scope="col">Brand</th>
+							<th scope="col">Model</th>
 							<th scope="col">Price</th>
 							<th scope="col">Qty</th>
 							<th scope="col" class="d-none d-sm-table-cell">Category</th>
@@ -61,6 +47,7 @@
 					</thead>
 
 					<tbody>
+						{% for product in products %}
 						<tr>
 							<th class="d-none d-sm-table-cell" scope="row">1</th>
 							<td class="d-sm-none">
@@ -68,12 +55,13 @@
 									<i class="bi bi-trash"></i>
 								</button>
 							</td>
-							<td>Winny Minni Shoes Winter</td>
-							<td>$375.56</td>
+							<td>{{ product.brand }}</td>
+							<td>{{ product.model }}</td>
+							<td>{{ product.price }}</td>
 							<td>
-								<input type="number" value="1" class="c-cart__qinput">
+								Qty
 							</td>
-							<td class="d-none d-sm-table-cell">Jackets</td>
+							<td class="d-none d-sm-table-cell">{{ product.category }}</td>
 							<td class="d-none d-sm-table-cell">
 								<a class="btn-trash">
 									<i class="bi bi-pencil-square"></i>
@@ -84,6 +72,7 @@
 
 							</td>
 						</tr>
+						{% endfor %}
 					</tbody>
 	</table>
 	<a href="{{ path('add_product') }}" class="btn btn-action text-light">Add product</a>

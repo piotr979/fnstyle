@@ -3,11 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Product;
+use App\Entity\Brand;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
-
+use App\Entity\Category;
 /**
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
  * @method Product|null findOneBy(array $criteria, array $orderBy = null)
@@ -46,11 +47,14 @@ class ProductRepository extends ServiceEntityRepository
     }
     public function findAllPaginated(int $page, string $category, string $sorting )
     {
-        $conn = $this->getEntityManager()->getConnection();
         $qb = $this->createQueryBuilder('p')
+        ->leftJoin('p.category', 'c')
+        ->leftJoin('p.brand', 'b')
+        ->select('b.name AS brand, p.model, p.price, c.name AS category')
         ->getQuery()
         ->getResult()
         ;
+        return $qb;
     }
 
 

@@ -15,10 +15,21 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\ColorType;
 use App\Form\CustomerProfileType;
+use App\Form\ProductType;
+use App\Service\FileHandler;
 
 #[Route('admin')]
 class AdminController extends AbstractController
 {
+    private ManagerRegistry $doctrine; 
+
+    public function __construct(ManagerRegistry $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
+
+    // ***** PRODUCTS ********** //
+
     // Redirect to catalog
     #[Route('/', name: 'admin')]
     public function admin()
@@ -29,9 +40,9 @@ class AdminController extends AbstractController
     // Displays main page (catalog)
     #[Route('/catalog/{page}/{category}/{sorting}', name: 'catalog',
         defaults: ['sorting' => 'name_desc', 'page' => 1, 'category' => 'all'])]
-    public function index(int $page, string $category, string $sorting, ManagerRegistry $doctrine): Response
+    public function index(int $page, string $category, string $sorting): Response
     {
-        $repo = $doctrine->getRepository(Product::class);
+        $repo = $this->doctrine->getRepository(Product::class);
         $products = $repo->findAllPaginated(
             $page,
             $category,
@@ -44,9 +55,29 @@ class AdminController extends AbstractController
 
     // Adding new product (clothes, beauty, etc.)
     #[Route('/add-product', name: 'add_product')]
-    public function addProduct()
+    public function addProduct(Request $request, ManagerRegistry $doctrine, FileHandler $fileHandler)
     {
-        return $this->render('admin/add-product.html.twig');
+        $product = new Product();
+        $productForm = $this->createForm(ProductType::class, $product);
+        $productForm->handleRequest($request);
+
+        if ($productForm->isSubmitted() && $productForm->isValid()) {
+            $data = $productForm->getData();
+            $images = $fileHandler->uploadImages($data->getImages(), $data->getCategory());
+            
+            $product->setImages($images);
+            $em = $doctrine->getManager();
+            $em->persist($product);
+            $em->flush();
+            $this->addFlash(
+               'notice',
+               'New product has been added.'
+            );
+            return $this->redirectToRoute('admin');
+        }
+        return $this->render('admin/add-product.html.twig', [
+            'productForm' => $productForm->createView()
+        ]);
     }
 
     // Edit product
@@ -56,12 +87,14 @@ class AdminController extends AbstractController
         return $this->render('admin/edit-item.html.twig');
     }
 
+     // ***** CUSTOMERS  ********** //
+
     // List of all customers 
     #[Route('/customers/{page}/{search}/{sorting}', name: 'customers',
         defaults: ['sorting' => 'name_desc', 'page' => 1, 'search' => ''])]
-    public function getCustomers(int $page, string $search, string $sorting, ManagerRegistry $doctrine): Response
+    public function getCustomers(int $page, string $search, string $sorting): Response
     {
-        $customers = $doctrine->getRepository(User::class)->findAllPaginated(
+        $customers = $this->doctrine->getRepository(User::class)->findAllPaginated(
             $page,
             $search,
             $sorting
@@ -73,9 +106,9 @@ class AdminController extends AbstractController
 
     // Edit customer
     #[Route('/edit-customer/{id}', name: 'edit-customer')]
-    public function editCustomer($id, Request $request, ManagerRegistry $doctrine): Response
+    public function editCustomer($id, Request $request): Response
     {
-        $user = $doctrine->getRepository(User::class)->find($id);
+        $user = $this->doctrine->getRepository(User::class)->find($id);
 
         $profileForm = $this->createForm(CustomerProfileType::class, $user);
         $profileForm->handleRequest($request);
@@ -89,11 +122,12 @@ class AdminController extends AbstractController
         ]);
     }
 
+     // ***** SETTINGS ********** //
     // Displays settings of colors,brands,sizes tabs
     #[Route('/settings/{page}/{class}', name: 'settings')]
-    public function settings(int $page=1, string $class="Category", ManagerRegistry $doctrine): Response
+    public function settings(int $page=1, string $class="Category"): Response
     {
-        $allItems = $doctrine->getRepository('App\\Entity\\' . $class)->
+        $allItems = $this->doctrine->getRepository('App\\Entity\\' . $class)->
             findAllPaginated($page, $class);
         return $this->render('admin/settings.html.twig', [
             'items' => $allItems,
@@ -104,10 +138,10 @@ class AdminController extends AbstractController
 
     // Save the color,brand,size,etc.
     #[Route('/item-save/{id}/{name}/{class}', name: 'item_save')]
-    public function itemCategory(int $id, string $name, string $class, ManagerRegistry $doctrine)
+    public function itemCategory(int $id, string $name, string $class)
     {
-        $em = $doctrine->getManager();
-            $item = $doctrine->getRepository('App\\Entity\\' . $class)->find($id);
+        $em = $this->doctrine->getManager();
+            $item = $this->doctrine->getRepository('App\\Entity\\' . $class)->find($id);
 
                 if (!$item) {
                     throw $this->createNotFoundException(
@@ -145,7 +179,7 @@ class AdminController extends AbstractController
 
     // Adds new category (form)
     #[Route('/category-add', name: 'category_add')]
-    public function addCategory(ManagerRegistry $doctrine, Request $request)
+    public function addCategory(Request $request)
     {
         $category = new Category();
         $categoryForm = $this->createForm(CategoryFormType::class, $category);
@@ -153,7 +187,7 @@ class AdminController extends AbstractController
         if ($categoryForm->isSubmitted() && $categoryForm->isValid()) {
             /* need to insert between existing data */
             $data = $categoryForm->getData();
-           $doctrine->getRepository(Category::class)->addNewCategoryIntoExisting($data->getParentCategory(), $data->getName());
+           $this->doctrine->getRepository(Category::class)->addNewCategoryIntoExisting($data->getParentCategory(), $data->getName());
             $this->addFlash('notice','New category inserted.');
             return $this->redirectToRoute('settings');
         }
@@ -164,7 +198,7 @@ class AdminController extends AbstractController
 
     // Adds new brand, size,color (form)
     #[Route('/item-add/{class}', name: 'item_add')]
-    public function itemAdd($class, Request $request, ManagerRegistry $doctrine)
+    public function itemAdd($class, Request $request)
     {
         if ($class == 'Category') {
             return $this->redirectToRoute('category_add');
@@ -174,7 +208,7 @@ class AdminController extends AbstractController
         $form = $this->createForm( 'App\\Form\\' . $class . 'Type', $item);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $doctrine->getManager();
+            $em = $this->doctrine->getManager();
 
             /* It's kind of generic "getName" call, common for Brand,Color,Size */
             $name = $form->getData()->getName();
@@ -198,10 +232,10 @@ class AdminController extends AbstractController
 
     // Removes brand, color, size
     #[Route('/remove-item/{id}/{class}', name: 'remove_item')]
-    public function removeItem($id, $class,  ManagerRegistry $doctrine)
+    public function removeItem($id, $class)
     {
-        $em = $doctrine->getManager();
-        $item = $doctrine->getRepository('App\\Entity\\' . $class)->find($id);
+        $em = $this->doctrine->getManager();
+        $item = $this->doctrine->getRepository('App\\Entity\\' . $class)->find($id);
         $em->remove($item);
         $em->flush();
         switch ($class) {

@@ -34,6 +34,9 @@ class Product
     #[ORM\Column(type: 'string', length: 255)]
     private $model;
 
+    #[ORM\Column(type: 'json', nullable: true)]
+    private $images = [];
+
     public function __construct()
     {
         $this->size = new ArrayCollection();
@@ -136,6 +139,18 @@ class Product
     public function setModel(string $model): self
     {
         $this->model = $model;
+
+        return $this;
+    }
+
+    public function getImages(): ?array
+    {
+        return $this->images;
+    }
+
+    public function setImages(?array $images): self
+    {
+        $this->images = $images;
 
         return $this;
     }

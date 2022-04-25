@@ -5,7 +5,8 @@ use App\Entity\User;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Uid\Uuid;
 
-class QuickHasher {
+class QuickHasher 
+{
 
     private $passwordHasher;
 

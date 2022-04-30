@@ -57,6 +57,13 @@ class ProductType extends AbstractType
                 'choice_label' => 'size',
                 'multiple' => true
                 ])
+            ->add('sizes', CollectionType::class, [
+                'mapped' => false,
+                'allow_add' => true,
+                'prototype' => true,
+                
+                
+            ])
             ->add('color', EntityType::class, [
                 'class' => Color::class,
                 'query_builder' => function (EntityRepository $er) {

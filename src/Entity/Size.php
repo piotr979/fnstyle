@@ -21,9 +21,13 @@ class Size
     #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'size')]
     private $products;
 
+    #[ORM\ManyToMany(targetEntity: Stock::class, mappedBy: 'size')]
+    private $stocks;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
+        $this->stocks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -65,6 +69,33 @@ class Size
     {
         if ($this->products->removeElement($product)) {
             $product->removeSize($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Stock>
+     */
+    public function getStocks(): Collection
+    {
+        return $this->stocks;
+    }
+
+    public function addStock(Stock $stock): self
+    {
+        if (!$this->stocks->contains($stock)) {
+            $this->stocks[] = $stock;
+            $stock->addSize($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStock(Stock $stock): self
+    {
+        if ($this->stocks->removeElement($stock)) {
+            $stock->removeSize($this);
         }
 
         return $this;

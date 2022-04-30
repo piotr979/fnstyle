@@ -79,12 +79,39 @@ class AdminController extends AbstractController
             'productForm' => $productForm->createView()
         ]);
     }
-
-    // Edit product
-    #[Route('/edit-product/{id}', name: 'edit-product')]
-    public function editItem($id): Response
+    #[Route('/dropzone', name: 'dropzone')]
+    public function dropzone()
     {
-        return $this->render('admin/edit-item.html.twig');
+        return $this->render('admin/dropzone.html.twig');
+    }
+    #[Route('/edit-product/{id}', name: 'edit-product')]
+    public function editItem($id, FileHandler $fileHandler, Request $request): Response
+    {
+        $product = $this->doctrine->getRepository(Product::class)->find($id);
+        $images = $fileHandler->getImagesWithPaths($product->getImages(), $product->getCategory());
+        if ($images === null) {
+            $images = [];
+        }
+        $productForm = $this->createForm(ProductType::class, $product);
+        $productForm->handleRequest($request);
+        if ($productForm->isSubmitted() && $productForm->isValid()) {
+           
+            $data = $productForm->getData();
+            $em = $this->doctrine->getManager();
+            $images = $fileHandler->uploadImages($data->getImages(), $data->getCategory());
+            $product->setImages($images);
+            $em->persist($product);
+            $em->flush();
+            $this->addFlash(
+               'notice',
+               'The product has been updated.'
+            );
+            return $this->redirectToRoute('catalog');
+        }
+        return $this->render('admin/edit-product.html.twig', [
+            'productForm' => $productForm->createView(),
+            'imagesForPreview' => json_encode($images, JSON_UNESCAPED_SLASHES)
+        ]);
     }
 
      // ***** CUSTOMERS  ********** //

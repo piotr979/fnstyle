@@ -48,7 +48,7 @@ class ProductType extends AbstractType
                 'choice_label' => 'name'
             ])
           
-            ->add('size', EntityType::class,[
+            ->add('size', CollectionType::class,[
                 'class' => Size::class,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('s')
@@ -68,8 +68,7 @@ class ProductType extends AbstractType
             ])
             ->add('images', FileType::class, [
                 'multiple' => true,
-                'required' => false
-                
+                'required' => false,
             ])
             ->add('submit', SubmitType::class, [
                 'attr' => [

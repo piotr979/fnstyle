@@ -9,7 +9,11 @@
 import './styles/app.scss';
 import './js/chapter-navigator';
 import './js/custom.js';
+import './js/jquery.min.js';
+import './js/jquery.uploadifive.min.js';
+
 require('bootstrap');
 require('animate.css');
+
 // start the Stimulus application
 import './bootstrap';

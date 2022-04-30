@@ -1,0 +1,54 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheets %}
+<link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.2.7/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+{{ parent() }}
+
+{% set packages = [1,2,3,4] %}
+<section id="container" data-imagesForPreview="{{ imagesForPreview }}" class="container">
+		{{ app.request.pathInfo }}
+			{% include 'admin/components/admin-header.html.twig' with {'heading' : 'Add product'} %}
+	
+		<div class="row mt-2">
+			<div class="col-12 col-md-6">
+			{{ form(productForm) }}
+			</div>
+		</div>
+	</section>
+
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.2.7/js/plugins/piexif.min.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.2.7/js/fileinput.min.js"></script>
+<script>
+$(document).ready(function() {
+    // initialize with defaults
+    // with plugin options
+	const container = document.getElementById('container');
+	const imagesForPreview = JSON.parse(container.dataset.imagesforpreview);
+	
+	console.log(imagesForPreview);
+	
+		 $("#product_images").fileinput({
+	'previewFileType': 'any',
+	'uploadUrl': '/uploads/',
+	'allowedFileTypes' : ['image'],
+	'overwriteInitial': false,
+	'showUpload': false,
+	'initialPreview': imagesForPreview.length == 0 ? [] : imagesForPreview,
+	    'initialPreviewConfig': [
+        {description: "<h5>The Desert</h5> This is a representative description number one for this image.", size: 827000, width: "120px"},
+        {description: "<h5>The Lighthouse</h5> This is a representative description number two for this image.", size: 549000, width: "120px"}, 
+		],
+	'initialPreviewAsData': true, // identify if you are sending preview data only and not the raw markup
+    'initialPreviewFileType': 'image', // image is the default and can be overridden in config below
+	'allowedFileExtensions': ['jpg', 'gif', 'png']
+	});
+});
+
+   
+</script>
+	{% endblock %}

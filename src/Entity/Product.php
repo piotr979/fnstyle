@@ -37,10 +37,14 @@ class Product
     #[ORM\Column(type: 'json', nullable: true)]
     private $images = [];
 
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Stock::class)]
+    private $stocks;
+
     public function __construct()
     {
         $this->size = new ArrayCollection();
         $this->color = new ArrayCollection();
+        $this->stocks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -151,6 +155,36 @@ class Product
     public function setImages(?array $images): self
     {
         $this->images = $images;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Stock>
+     */
+    public function getStocks(): Collection
+    {
+        return $this->stocks;
+    }
+
+    public function addStock(Stock $stock): self
+    {
+        if (!$this->stocks->contains($stock)) {
+            $this->stocks[] = $stock;
+            $stock->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStock(Stock $stock): self
+    {
+        if ($this->stocks->removeElement($stock)) {
+            // set the owning side to null (unless already changed)
+            if ($stock->getProduct() === $this) {
+                $stock->setProduct(null);
+            }
+        }
 
         return $this;
     }

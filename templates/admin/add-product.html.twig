@@ -11,7 +11,13 @@
 			{% include 'admin/components/admin-header.html.twig' with {'heading' : 'Add product'} %}
 		<div class="row mt-2">
 			<div class="col-12 col-md-6">
-			{{ form(productForm) }}
+			{{ form_start(productForm) }}
+
+<ul class="sizes"
+    data-index="{{ productForm.sizes|length > 0 ? productForm.sizes|last.vars.sizes + 1 : 0 }}"
+    data-prototype="{{ form_widget(productForm.sizes.vars.prototype)|e('html_attr') }}"
+></ul>
+			{{ form_end(productForm) }}
 			</div>
 		</div>
 </section>
@@ -30,6 +36,12 @@ $(document).ready(function() {
     $("#product_images").fileinput({
 	'previewFileType': 'any',
 	'allowedFileTypes' : ['image'],
+	
+	'initialPreview' : [
+		"https://kartik-v.github.io/bootstrap-fileinput-samples/samples/Desert.jpg"
+	], 
+	initialPreviewAsData: true,
+	initialPreviewFileType: 'image',
 	'allowedFileExtensions': ['jpg', 'gif', 'png']});
 });
 </script>

@@ -1,11 +1,29 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block body %}
-<section class="container">
-		<div class="row ms-3 ms-sm-2 ms-md-0">
-			<div class="col ps-0">
-				<h2 class="fw-bold">Edit item</h2>
-				<h3 class="fw-bold"></h2>
-			</div>
-		</div>
+{% block stylesheets %}
+{{ parent() }}
+  <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
 {% endblock %}
+{% block body %}
+<section id="container" data-imagesForPreview="{{ imagesForPreview }}" class="container">
+
+			{% include 'admin/components/admin-header.html.twig' with {'heading' : 'Add product'} %}
+	
+		<div class="row mt-2">
+			<div class="col-12 col-md-6">
+          
+          {{ form(productForm) }}
+      <!-- Change /upload-target to your upload address -->
+
+
+<!-- Or With An Input Field Fallback -->
+  
+
+	</section>
+
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	=
+
+   {% endblock %}

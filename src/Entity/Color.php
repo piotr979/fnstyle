@@ -21,9 +21,16 @@ class Color
     #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'color')]
     private $products;
 
+    #[ORM\ManyToMany(targetEntity: Stock::class, mappedBy: 'color')]
+    private $stocks;
+
+   
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
+        $this->stocks = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -72,4 +79,33 @@ class Color
     public function __toString() {
         return '';
     }
+
+    /**
+     * @return Collection<int, Stock>
+     */
+    public function getStocks(): Collection
+    {
+        return $this->stocks;
+    }
+
+    public function addStock(Stock $stock): self
+    {
+        if (!$this->stocks->contains($stock)) {
+            $this->stocks[] = $stock;
+            $stock->addColor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStock(Stock $stock): self
+    {
+        if ($this->stocks->removeElement($stock)) {
+            $stock->removeColor($this);
+        }
+
+        return $this;
+    }
+
+    
 }

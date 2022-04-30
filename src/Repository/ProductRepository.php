@@ -9,6 +9,8 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Category;
+use Knp\Component\Pager\PaginatorInterface;
+
 /**
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
  * @method Product|null findOneBy(array $criteria, array $orderBy = null)
@@ -17,9 +19,11 @@ use App\Entity\Category;
  */
 class ProductRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private PaginatorInterface $paginator;
+    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {
         parent::__construct($registry, Product::class);
+        $this->paginator = $paginator;
     }
 
     /**
@@ -50,11 +54,16 @@ class ProductRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('p')
         ->leftJoin('p.category', 'c')
         ->leftJoin('p.brand', 'b')
-        ->select('b.name AS brand, p.model, p.price, c.name AS category')
+        ->select('p.id, b.name AS brand, p.model, p.price, c.name AS category')
         ->getQuery()
         ->getResult()
         ;
-        return $qb;
+        if (isset($qb)) {
+            $paginated = $this->paginator->paginate($qb, $page, 10);
+            return $paginated;
+        } else {
+            return null;
+        }
     }
 
 

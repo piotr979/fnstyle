@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -11,7 +12,20 @@ class MiscController extends AbstractController
     /* Redirecting to uploads when uploader plugin sends AJAX request */
     /* For now it's DISABLED as images are uploaded by form submission */
     /* https://plugins.krajee.com/file-input#usage */
-    #[Route('/uploads', name: 'uploads')]
+    public function uploadAction (Request $request )  
+    {
+        $form = $this->createFormBuilder ()->getForm () ;
+        $form->handleRequest ( $request ) ;
+        if ( $form->isValid ()) {  
+            
+          
+        }
+        return $this-> render ( 'AcmeAcmeBundle:Default:dropzone.html.twig' , array ( 
+            'form' => $form->createView () 
+        )) ;
+    }
+
+    #[Route('/upload-target', name: 'upload-target')]
     public function uploads()
     {
       $uploaddir = '/var/www/uploads/';

@@ -1,0 +1,61 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheets %}
+{{ parent() }}
+  <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+{% endblock %}
+{% block body %}
+<section id="container" class="container">
+
+			{% include 'admin/components/admin-header.html.twig' with {'heading' : 'Modify stock'} %}
+	
+	
+		<div class="row mt-2">
+			<div class="col-12 col-md-6">
+	{{ form_start(stockForm) }}
+	<ul>
+		<li class="">
+			{{ form_row(stockForm.stocks) }}
+		</li>
+	</ul>
+{{ form_end(stockForm) }}
+      <!-- Change /upload-target to your upload address -->
+<!-- Or With An Input Field Fallback -->
+	</div>
+	</div>
+	</section>
+
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+	document.addEventListener("DOMContentLoaded", function() {
+
+			const addFormToCollection = (e) => {
+		const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+		console.log(collectionHolder);
+		const item = document.createElement('li');
+
+		item.innerHTML = collectionHolder
+							.dataset
+							.prototype
+							.replace(
+							/__name__/g,
+      collectionHolder.dataset.index
+							);
+		 collectionHolder.appendChild(item);
+
+  collectionHolder.dataset.index++;
+	}
+	document.querySelectorAll('.addstock_link')
+			.forEach( btn => {
+				btn.addEventListener('click', addFormToCollection)
+			})
+
+	});
+
+		
+
+	</script>
+
+   {% endblock %}

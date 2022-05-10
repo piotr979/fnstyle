@@ -25,12 +25,6 @@ class Product
     #[ORM\JoinColumn(nullable: false)]
     private $brand;
 
-    #[ORM\ManyToMany(targetEntity: Size::class, inversedBy: 'products')]
-    private $size;
-
-    #[ORM\ManyToMany(targetEntity: Color::class, inversedBy: 'products')]
-    private $color;
-
     #[ORM\Column(type: 'string', length: 255)]
     private $model;
 
@@ -42,8 +36,6 @@ class Product
 
     public function __construct()
     {
-        $this->size = new ArrayCollection();
-        $this->color = new ArrayCollection();
         $this->stocks = new ArrayCollection();
     }
 
@@ -86,55 +78,6 @@ class Product
 
         return $this;
     }
-
-    /**
-     * @return Collection<int, Size>
-     */
-    public function getSize(): Collection
-    {
-        return $this->size;
-    }
-
-    public function addSize(Size $size): self
-    {
-        if (!$this->size->contains($size)) {
-            $this->size[] = $size;
-        }
-
-        return $this;
-    }
-
-    public function removeSize(Size $size): self
-    {
-        $this->size->removeElement($size);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Color>
-     */
-    public function getColor(): Collection
-    {
-        return $this->color;
-    }
-
-    public function addColor(Color $color): self
-    {
-        if (!$this->color->contains($color)) {
-            $this->color[] = $color;
-        }
-
-        return $this;
-    }
-
-    public function removeColor(Color $color): self
-    {
-        $this->color->removeElement($color);
-
-        return $this;
-    }
-
     public function getModel(): ?string
     {
         return $this->model;
@@ -169,7 +112,7 @@ class Product
 
     public function addStock(Stock $stock): self
     {
-        if (!$this->stocks->contains($stock)) {
+    if (!$this->stocks->contains($stock)) {
             $this->stocks[] = $stock;
             $stock->setProduct($this);
         }

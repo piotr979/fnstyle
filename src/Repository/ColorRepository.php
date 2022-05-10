@@ -61,6 +61,15 @@ class ColorRepository extends ServiceEntityRepository
             return null;
         }
     }
+    public function getChoices()
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->getQuery()
+            ->getResult()
+            ;
+
+        return $qb;
+    }
     // /**
     //  * @return Color[] Returns an array of Color objects
     //  */

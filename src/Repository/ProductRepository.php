@@ -65,6 +65,26 @@ class ProductRepository extends ServiceEntityRepository
             return null;
         }
     }
+    public function findAllRelatedStock(int $id)
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('p.model,
+                     b.name, 
+                     s.qty, 
+                     c.id, 
+                     c.name AS colorName, 
+                     size.size AS stockSize')
+            ->innerJoin('p.brand', 'b')
+            ->innerJoin('p.stocks','s')
+            ->leftJoin('s.color', 'c')
+            ->leftJoin('s.size', 'size')
+            ->where('p.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult()
+            ;
+           return $qb;
+    }
 
 
     // /**

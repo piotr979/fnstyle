@@ -7,6 +7,7 @@ use App\Entity\Brand;
 use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\Size;
+use App\Form\StockType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\AbstractType;
@@ -47,35 +48,16 @@ class ProductType extends AbstractType
                 },
                 'choice_label' => 'name'
             ])
-          
-            ->add('size', CollectionType::class,[
-                'class' => Size::class,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('s')
-                    ->orderBy('s.size');
-                },
-                'choice_label' => 'size',
-                'multiple' => true
-                ])
-            ->add('sizes', CollectionType::class, [
-                'mapped' => false,
-                'allow_add' => true,
-                'prototype' => true,
-                
-                
-            ])
-            ->add('color', EntityType::class, [
-                'class' => Color::class,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('c')
-                    ->orderBy('c.name');
-                },
-                'choice_label' => 'name',
-                'multiple' => true
-            ])
             ->add('images', FileType::class, [
                 'multiple' => true,
                 'required' => false,
+            ])
+            ->add('stocks', CollectionType::class, [
+                'entry_type' => StockType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+                'entry_options' => ['label' => false]
             ])
             ->add('submit', SubmitType::class, [
                 'attr' => [

@@ -6,8 +6,10 @@ use App\Entity\Product;
 use App\Entity\Category;
 use App\Entity\Color;
 use App\Entity\Size;
+use App\Entity\Stock;
 use App\Entity\User;
 use App\Form\CategoryFormType;
+use App\Form\StockCollectionType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,8 +18,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Form\ColorType;
 use App\Form\CustomerProfileType;
 use App\Form\ProductType;
+use App\Form\StockType;
 use App\Service\FileHandler;
-
 #[Route('admin')]
 class AdminController extends AbstractController
 {
@@ -57,7 +59,10 @@ class AdminController extends AbstractController
     #[Route('/add-product', name: 'add_product')]
     public function addProduct(Request $request, ManagerRegistry $doctrine, FileHandler $fileHandler)
     {
+        
         $product = new Product();
+        $product->addStock($productStocks[0]);
+        $product->addStock($productStocks[1]);
         $productForm = $this->createForm(ProductType::class, $product);
         $productForm->handleRequest($request);
 
@@ -88,11 +93,13 @@ class AdminController extends AbstractController
     public function editItem($id, FileHandler $fileHandler, Request $request): Response
     {
         $product = $this->doctrine->getRepository(Product::class)->find($id);
+        $sizes = $this->doctrine->getRepository(Size::class)->findAll();
         $images = $fileHandler->getImagesWithPaths($product->getImages(), $product->getCategory());
         if ($images === null) {
             $images = [];
         }
         $productForm = $this->createForm(ProductType::class, $product);
+
         $productForm->handleRequest($request);
         if ($productForm->isSubmitted() && $productForm->isValid()) {
            
@@ -110,10 +117,52 @@ class AdminController extends AbstractController
         }
         return $this->render('admin/edit-product.html.twig', [
             'productForm' => $productForm->createView(),
+            'sizes' => $sizes,
             'imagesForPreview' => json_encode($images, JSON_UNESCAPED_SLASHES)
         ]);
     }
+    // ****** STOCK ************** //
+    #[Route('/stock/{page}/{category}/{sorting}', name: 'stock',
+    defaults: ['sorting' => 'name_desc', 'page' => 1, 'category' => 'all'])]
+public function stock(int $page, string $category, string $sorting): Response
+{
+    $repo = $this->doctrine->getRepository(Product::class);
+    $products = $repo->findAllPaginated(
+        $page,
+        $category,
+        $sorting
+    );
+    return $this->render('admin/stock.html.twig', [
+        'products' => $products
+    ]);
+}
+ // Edit stock
+ #[Route('/edit-stock/{productId}', name: 'edit_stock')]
+ public function editStock($productId, Request $request): Response
+ {
+    // find by product
+    $productStocks = $this->doctrine->getRepository(Stock::class)->findBy(['product' => $productId]);
+    $colorChoices = $this->doctrine->getRepository(Color::class)->getChoices();
+   
+    $product = new Product();
+    if (count($productStocks) > 0 ) {
+    foreach ($productStocks as $entry) {
+        $product->addStock($entry);
+    }
+}
 
+    $stockForm = $this->createForm(StockCollectionType::class, $product);
+     
+     $stockForm->handleRequest($request);
+   
+     if ($stockForm->isSubmitted() && $stockForm->isValid()) {
+         dump($stockForm->getData());
+     }
+  
+     return $this->render('admin/edit-stock.html.twig', [
+        'stockForm' => $stockForm->createView()
+     ]);
+}
      // ***** CUSTOMERS  ********** //
 
     // List of all customers 
@@ -161,6 +210,7 @@ class AdminController extends AbstractController
             'classItem' => $class,
             'page' => $page
         ]);
+          
     }
 
     // Save the color,brand,size,etc.

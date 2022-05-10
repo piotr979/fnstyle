@@ -21,17 +21,11 @@ class Stock
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'stocks')]
     private $product;
 
-    #[ORM\ManyToMany(targetEntity: Color::class, inversedBy: 'stocks')]
+    #[ORM\ManyToOne(targetEntity: Color::class, inversedBy: 'stocks') ]
     private $color;
 
-    #[ORM\ManyToMany(targetEntity: Size::class, inversedBy: 'stocks')]
+    #[ORM\ManyToOne(targetEntity: Size::class, inversedBy: 'stocks')]
     private $size;
-
-    public function __construct()
-    {
-        $this->size = new ArrayCollection();
-        $this->color = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -63,50 +57,30 @@ class Stock
     }
 
     /**
-     * @return Collection<int, Color>
+     * @return Color
      */
-    public function getColor(): Collection
+    public function getColor(): ?Color
     {
         return $this->color;
     }
 
-    public function addColor(Color $color): self
-    {
-        if (!$this->color->contains($color)) {
-            $this->color[] = $color;
-        }
-
-        return $this;
-    }
-
-    public function removeColor(Color $color): self
-    {
-        $this->color->removeElement($color);
-
-        return $this;
-    }
+   public function setColor(?Color $color): self
+   {
+       $this->color = $color;
+       return $this;
+   }
 
     /**
-     * @return Collection<int, Size>
+     * @return Size
      */
-    public function getSize(): Collection
+    public function getSize(): ?Size
     {
         return $this->size;
     }
 
-    public function addSize(Size $size): self
-    {
-        if (!$this->size->contains($size)) {
-            $this->size[] = $size;
-        }
-
-        return $this;
-    }
-
-    public function removeSize(Size $size): self
-    {
-        $this->size->removeElement($size);
-
-        return $this;
-    }
+    public function setSize(?Size $size): self
+   {
+       $this->size = $size;
+       return $this;
+   }
 }

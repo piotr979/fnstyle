@@ -57,6 +57,18 @@ body {
 form[name="color"] input[type="color"] {
     display: none !important;
 }
+div[id^="stock_collection_stocks_"] {
+    display: flex;
+    flex-direction: row;
+}
+div[id^="stock_collection_stocks_"] div input,
+div[id^="stock_collection_stocks_"] div {
+    margin-right: 1rem;
+}
+div[id^="stock_collection_stocks_"] input {
+    width: 5rem;
+}
+
 $baseBorderRadius: 0;
 @import 'base/queries';
 @import 'abstract/variables';

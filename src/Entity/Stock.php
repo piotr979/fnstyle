@@ -83,4 +83,5 @@ class Stock
        $this->size = $size;
        return $this;
    }
+  
 }

@@ -18,7 +18,7 @@ class Color
     #[ORM\Column(type: 'string', length: 48)]
     private $name;
 
-    #[ORM\ManyToMany(targetEntity: Stock::class, mappedBy: 'color')]
+    #[ORM\OneToMany(mappedBy: 'color', targetEntity: Stock::class, orphanRemoval: true)]
     private $stocks;
 
     public function __construct()
@@ -50,10 +50,6 @@ class Color
     {
         return $this->products;
     }
-    public function __toString() {
-    return '';
-    }
-
     /**
      * @return Collection<int, Stock>
      */
@@ -82,7 +78,10 @@ class Color
 
         return $this;
     }
-
+    public function __toString() 
+    {
+        return $this->name;
+    }
     
     
 }

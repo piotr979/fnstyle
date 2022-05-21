@@ -18,7 +18,7 @@ class Size
     #[ORM\Column(type: 'string', length: 32)]
     private $size;
 
-    #[ORM\ManyToMany(targetEntity: Stock::class, mappedBy: 'size')]
+    #[ORM\OneToMany(mappedBy: 'size', targetEntity: Stock::class, orphanRemoval: true)]
     private $stocks;
 
     public function __construct()

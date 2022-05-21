@@ -12,6 +12,7 @@
         "doctrine/orm": "^2.11",
         "kartik-v/bootstrap-fileinput": "@dev",
         "knplabs/knp-paginator-bundle": "^5.8",
+        "symfony/cache": "6.0.*",
         "symfony/console": "6.0.*",
         "symfony/dotenv": "6.0.*",
         "symfony/flex": "^2",

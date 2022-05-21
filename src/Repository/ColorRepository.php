@@ -64,11 +64,17 @@ class ColorRepository extends ServiceEntityRepository
     public function getChoices()
     {
         $qb = $this->createQueryBuilder('c')
+            ->select('c.name')
             ->getQuery()
-            ->getResult()
+            ->getArrayResult()
             ;
 
-        return $qb;
+        // convert to one array    
+        $arr = [];
+        foreach($qb as $name) {
+            $arr[$name['name']] = $name['name'];
+        }
+        return $arr;
     }
     // /**
     //  * @return Color[] Returns an array of Color objects

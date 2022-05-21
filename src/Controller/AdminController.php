@@ -20,6 +20,8 @@ use App\Form\CustomerProfileType;
 use App\Form\ProductType;
 use App\Form\StockType;
 use App\Service\FileHandler;
+
+
 #[Route('admin')]
 class AdminController extends AbstractController
 {
@@ -143,17 +145,21 @@ public function stock(int $page, string $category, string $sorting): Response
     // find by product
     $productStocks = $this->doctrine->getRepository(Stock::class)->findBy(['product' => $productId]);
     $colorChoices = $this->doctrine->getRepository(Color::class)->getChoices();
-   
+    $sizeChoices = $this->doctrine->getRepository(Size::class)->getChoices();
     $product = new Product();
     if (count($productStocks) > 0 ) {
     foreach ($productStocks as $entry) {
         $product->addStock($entry);
     }
 }
-
-    $stockForm = $this->createForm(StockCollectionType::class, $product);
-     
+    
+    $stockForm = $this->createForm(StockCollectionType::class, $product, [
+        'color_choices' => $colorChoices,
+        'size_choices' => $sizeChoices
+    ]);
+   
      $stockForm->handleRequest($request);
+
    
      if ($stockForm->isSubmitted() && $stockForm->isValid()) {
          dump($stockForm->getData());

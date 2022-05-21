@@ -62,6 +62,19 @@ class SizeRepository extends ServiceEntityRepository
             return null;
         }
     }
+    public function getChoices()
+    {
+        $qb = $this->createQueryBuilder('s')
+            ->select('s.size')
+            ->getQuery()
+            ->getArrayResult()
+            ;
+            $arr = [];
+            foreach($qb as $name) {
+                $arr[$name['size']] = $name['size'];
+            }
+            return $arr;
+    }
     // /**
     //  * @return Size[] Returns an array of Size objects
     //  */

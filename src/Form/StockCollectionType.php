@@ -21,7 +21,11 @@ class StockCollectionType extends AbstractType
             'allow_add' => true,
             'allow_delete' => true,
             'prototype' => true,
-            'by_reference' => false
+            'by_reference' => false,
+            'entry_options' => [
+                'color_choices' => $options['color_choices'],
+                'size_choices' => $options['size_choices']
+            ]
         ])
      ;
     }
@@ -29,7 +33,9 @@ class StockCollectionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Product::class
+            'data_class' => Product::class,
+            'color_choices' => [],
+            'size_choices' => []
             // Configure your form options here
         ]);
     }

@@ -43,6 +43,7 @@
 						{% set currentRoute = app.request.attributes.get('_route') %}
 						{{ include('admin/components/admin-menu-item.html.twig', {currentRoute: currentRoute, route: 'catalog', icon: 'list-task' }) }}
 						{{ include('admin/components/admin-menu-item.html.twig', {currentRoute: currentRoute, route: 'stock', icon: 'archive' }) }}
+						{{ include('admin/components/admin-menu-item.html.twig', {currentRoute: currentRoute, route: 'sales', icon: 'receipt' }) }}
 						{{ include('admin/components/admin-menu-item.html.twig', {currentRoute: currentRoute, route: 'customers', icon: 'arrow-down-up' }) }}
 						{{ include('admin/components/admin-menu-item.html.twig', {currentRoute: currentRoute, route: 'settings', icon: 'box-arrow-in-right' }) }}
 

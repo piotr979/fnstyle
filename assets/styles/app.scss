@@ -60,7 +60,9 @@ form[name="color"] input[type="color"] {
 div[id^="stock_collection_stocks_"] {
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
+
 div[id^="stock_collection_stocks_"] div input,
 div[id^="stock_collection_stocks_"] div {
     margin-right: 1rem;

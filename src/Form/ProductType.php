@@ -52,13 +52,6 @@ class ProductType extends AbstractType
                 'multiple' => true,
                 'required' => false,
             ])
-            ->add('stocks', CollectionType::class, [
-                'entry_type' => StockType::class,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'prototype' => true,
-                'entry_options' => ['label' => false]
-            ])
             ->add('submit', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn btn-action'

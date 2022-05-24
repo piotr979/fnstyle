@@ -54,7 +54,10 @@ class ProductRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('p')
         ->leftJoin('p.category', 'c')
         ->leftJoin('p.brand', 'b')
-        ->select('p.id, b.name AS brand, p.model, p.price, c.name AS category')
+        ->leftJoin('p.stocks', 'stock')
+        ->select('p.id, b.name AS brand, p.model, p.price, SUM (stock.qty) AS total_qty,
+            c.name AS category')
+        ->groupBy('p.id')
         ->getQuery()
         ->getResult()
         ;

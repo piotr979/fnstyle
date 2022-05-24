@@ -1,70 +1,99 @@
 {% extends 'admin/base.html.twig' %}
 
 {% block stylesheets %}
-{{ parent() }}
-  <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+	{{ parent() }}
+	<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css"/>
 {% endblock %}
 {% block body %}
-<section id="container" class="container">
-
-			{% include 'admin/components/admin-header.html.twig' with {'heading' : 'Modify stock'} %}
-	
-	
+	<section id="container" class="container">
+		{% include 'admin/components/admin-header.html.twig' with {'heading' : 'Modify stock'} %}
 		<div class="row mt-2">
-			<div class="col-12 col-md-6">
-	
-	<ul class="stocks"
-		 data-index="{{ stockForm.stocks|length > 0 ? stockForm.stocks : 0 }}"
-   data-prototype="{{ form_widget(stockForm.stocks.vars.prototype)|e('html_attr') }}"
-	>
-	{{ dump(_context.stockForm.stocks|keys) }}
-	{% for stock in _context.stockForm.stocks %}
-		<li class="">
-
-			{{ form_widget(stock) }}
-
-			<button>Delete</button>
-		</li>
-	</ul>
-	{% endfor %}
-
-      <!-- Change /upload-target to your upload address -->
-<!-- Or With An Input Field Fallback -->
-	</div>
-	</div>
+			<div class="col-12 col-md-6 ms-0 ps-0">
+				{{ form_start(stockForm) }}
+				<ul class="stocks list-unstyled" id="stocks-data" 
+				data-index="{{ stockForm.stocks|length > 0 ? stockForm.stocks|length : 0 }}" data-prototype="{{ form_widget(stockForm.stocks.vars.prototype)|e('html_attr') }}">
+					{% for stock in _context.stockForm.stocks %}
+						<li class="">
+							{{ form_widget(stock) }}
+						</li>
+					{% endfor %}
+				</ul>
+				<div class="d-flex flex-row align-items-center">
+					{{ form_row(stockForm.submit)}}
+					{{ form_end(stockForm) }}
+					<div class="ms-2 mb-3">
+						<button type="button" class="btn btn-action__success" data-collection-holder-class="stocks" id="add-new-button">Add new size</button>
+					</div>
+				</div>
+				<!-- Change /upload-target to your upload address -->
+				<!-- Or With An Input Field Fallback -->
+			</div>
+		</div>
 	</section>
 
 {% endblock %}
 {% block javascripts %}
 	{{ parent() }}
 	<script>
-	document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
+  /* Get list of all stock subforms - ul parent element */
+  const collectionHolder = document.getElementById("stocks-data");
+ 
+	console.log(collectionHolder);
+  /* Get single stock subform for adding new one */
+  const protoData = collectionHolder.dataset.prototype;
 
-			const addFormToCollection = (e) => {
-		const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
-		console.log(collectionHolder);
-		const item = document.createElement('li');
+  const addDeleteButton = (item) => {
+    /* New delete button must be added to div element inside li,where
+         the item is li. */
+    const divInsideItem = item.querySelector("div");
+    const buttonWrapper = document.createElement("div");
 
-		item.innerHTML = collectionHolder
-							.dataset
-							.prototype
-							.replace(
-							/__name__/g,
-      collectionHolder.dataset.index
-							);
-		 collectionHolder.appendChild(item);
+    buttonWrapper.classList.add("mt-3");
+    const deleteButton = document.createElement("button");
+    const trashImage = document.createElement("i");
+    trashImage.classList.add("bi");
+    trashImage.classList.add("bi-trash");
 
-  collectionHolder.dataset.index++;
+    deleteButton.appendChild(trashImage);
+    deleteButton.classList.add("btn");
+    deleteButton.classList.add("btn-danger");
+    buttonWrapper.appendChild(deleteButton);
+    divInsideItem.append(buttonWrapper);
+    deleteButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      item.remove();
+    });
+  };
+
+  const addStockForm = (e) => {
+		 e.preventDefault();
+    const item = document.createElement("li");
+    console.log(item);
+    const form = protoData.replace(/__name__/g, collectionHolder.dataset.index);
+    item.innerHTML = form;
+    collectionHolder.appendChild(item);
+    collectionHolder.dataset.index++;
+    addDeleteButton(item);
 	}
-	document.querySelectorAll('.addstock_link')
-			.forEach( btn => {
-				btn.addEventListener('click', addFormToCollection)
-			})
 
-	});
+ if (collectionHolder.dataset.index == 0) {
+	   const item = document.createElement("li");
+    console.log(item);
+    const form = protoData.replace(/__name__/g, collectionHolder.dataset.index);
+    item.innerHTML = form;
+    collectionHolder.appendChild(item);
+    collectionHolder.dataset.index++;
+  }
 
-		
+  /* Add new size subform to the form */
+  const addButton = document.getElementById("add-new-button");
+  addButton.addEventListener("click", addStockForm);
 
+  /* Add delete button to each stock subform */
+  collectionHolder.querySelectorAll("li").forEach((item) => {
+    addDeleteButton(item);
+  });
+});
 	</script>
-
-   {% endblock %}
+{% endblock %}

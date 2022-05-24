@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\StockType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class StockCollectionType extends AbstractType
@@ -21,11 +22,10 @@ class StockCollectionType extends AbstractType
             'allow_add' => true,
             'allow_delete' => true,
             'prototype' => true,
-            'by_reference' => false,
-            'entry_options' => [
-                'color_choices' => $options['color_choices'],
-                'size_choices' => $options['size_choices']
-            ]
+            'by_reference' => false
+        ])
+        ->add('submit', SubmitType::class, [
+            'attr' => ['class' => 'btn btn-action']
         ])
      ;
     }
@@ -33,9 +33,7 @@ class StockCollectionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Product::class,
-            'color_choices' => [],
-            'size_choices' => []
+            'data_class' => Product::class
             // Configure your form options here
         ]);
     }

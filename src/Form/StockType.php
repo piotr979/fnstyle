@@ -30,12 +30,12 @@ class StockType extends AbstractType
       
         $builder
             ->add('qty', NumberType::class)
-            ->add('color', ChoiceType::class, [
-                'choices' => $options['color_choices']
+            ->add('color', EntityType::class, [
+                'class' => Color::class
                
             ])
-            ->add('size', ChoiceType::class, [
-                'choices' => $options['size_choices']
+            ->add('size', EntityType::class, [
+                'class' => Size::class
             ]
             )
         ;
@@ -45,9 +45,7 @@ class StockType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Stock::class,
-            'color_choices' => [],
-            'size_choices' => []
+            'data_class' => Stock::class
         ]);
     }
 }

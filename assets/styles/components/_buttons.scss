@@ -39,6 +39,17 @@ button.btn-action {
     border: 2px solid black;
     width: 100%;
 }
+.btn-action__success {
+    background-color: $green;
+    color: white;
+    transition: .4s all;
+    width: 100%;
+}
+.btn-action__success:hover {
+    background-color: white;
+    border: 2px solid $green;
+    color: black;
+}
 .btn-action:hover {
     background-color: white;
     color: black;

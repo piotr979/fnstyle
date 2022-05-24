@@ -35,7 +35,7 @@ class FileHandler
                 $image->move(
                     $uploadDir,
                     $newFilename
-                );
+                );  
             } catch (FileException $e) {
                 throw new ErrorException('Could not upload the images.');
             }
@@ -54,7 +54,7 @@ class FileHandler
                     if ($image == null) {
                         return null;
                     }
-                    $imagesWithPaths[] = '/' . $this->products_images_dir . '/' .
+                    $imagesWithPaths[] = '/uploads/products/' .
                         $category->getName() .  '/' . $image;
                 }
            

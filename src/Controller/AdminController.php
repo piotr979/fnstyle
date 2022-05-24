@@ -52,6 +52,7 @@ class AdminController extends AbstractController
             $category,
             $sorting
         );
+        $stocks = $this->doctrine->getRepository(Stock::class);
         return $this->render('admin/catalog.html.twig', [
             'products' => $products
         ]);
@@ -63,8 +64,7 @@ class AdminController extends AbstractController
     {
         
         $product = new Product();
-        $product->addStock($productStocks[0]);
-        $product->addStock($productStocks[1]);
+     
         $productForm = $this->createForm(ProductType::class, $product);
         $productForm->handleRequest($request);
 
@@ -97,6 +97,7 @@ class AdminController extends AbstractController
         $product = $this->doctrine->getRepository(Product::class)->find($id);
         $sizes = $this->doctrine->getRepository(Size::class)->findAll();
         $images = $fileHandler->getImagesWithPaths($product->getImages(), $product->getCategory());
+        $existingImages = $product->getImages();
         if ($images === null) {
             $images = [];
         }
@@ -107,8 +108,16 @@ class AdminController extends AbstractController
            
             $data = $productForm->getData();
             $em = $this->doctrine->getManager();
-            $images = $fileHandler->uploadImages($data->getImages(), $data->getCategory());
-            $product->setImages($images);
+
+            /* Processing image list */
+            if ($data->getImages()) {
+              
+                $images = $fileHandler->uploadImages($data->getImages(), $data->getCategory());
+                $imagesUploadedAndNewOnes = array_merge($images, $existingImages);
+                $product->setImages($imagesUploadedAndNewOnes);
+            } else {
+                $product->setImages($existingImages);
+            }
             $em->persist($product);
             $em->flush();
             $this->addFlash(
@@ -117,10 +126,12 @@ class AdminController extends AbstractController
             );
             return $this->redirectToRoute('catalog');
         }
+   
         return $this->render('admin/edit-product.html.twig', [
             'productForm' => $productForm->createView(),
             'sizes' => $sizes,
-            'imagesForPreview' => json_encode($images, JSON_UNESCAPED_SLASHES)
+            'imagesList' => $existingImages,
+            'imagesForPreview' => $images
         ]);
     }
     // ****** STOCK ************** //
@@ -144,8 +155,6 @@ public function stock(int $page, string $category, string $sorting): Response
  {
     // find by product
     $productStocks = $this->doctrine->getRepository(Stock::class)->findBy(['product' => $productId]);
-    $colorChoices = $this->doctrine->getRepository(Color::class)->getChoices();
-    $sizeChoices = $this->doctrine->getRepository(Size::class)->getChoices();
     $product = new Product();
     if (count($productStocks) > 0 ) {
     foreach ($productStocks as $entry) {
@@ -153,10 +162,7 @@ public function stock(int $page, string $category, string $sorting): Response
     }
 }
     
-    $stockForm = $this->createForm(StockCollectionType::class, $product, [
-        'color_choices' => $colorChoices,
-        'size_choices' => $sizeChoices
-    ]);
+    $stockForm = $this->createForm(StockCollectionType::class, $product);
    
      $stockForm->handleRequest($request);
 
@@ -169,6 +175,12 @@ public function stock(int $page, string $category, string $sorting): Response
         'stockForm' => $stockForm->createView()
      ]);
 }
+
+    #[Route('/sales', name: 'sales')]
+    public function sales()
+    {
+        return new Response('Sales page');
+    }
      // ***** CUSTOMERS  ********** //
 
     // List of all customers 

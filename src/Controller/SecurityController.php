@@ -27,14 +27,14 @@ class SecurityController extends AbstractController
    
     $error = $authenticationUtils->getLastAuthenticationError();
     $lastUsername = $authenticationUtils->getLastUsername();
-
     $regForm = $this->createForm(RegistrationFormType::class, null, [
         'action' => $this->generateUrl('app_register')
     ]);
 
     return $this->render('customer/customer-account.html.twig', [
         'regForm' => $regForm->createView(),
-        'last_username' => $lastUsername, 'error' => $error
+        'last_username' => $lastUsername, 
+        'error' => $error
     ]);
     }
     

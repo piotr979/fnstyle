@@ -7,9 +7,14 @@
 {% block body %}
 	<section id="container" class="container">
 		{% include 'admin/components/admin-header.html.twig' with {'heading' : 'Modify stock'} %}
-		<div class="row mt-2">
+	
+  	{% for flash in app.flashes('notice') %}
+        <p class="text-danger">{{ flash }}</p>
+    {% endfor %}
+
+    <div class="row mt-2">
 			<div class="col-12 col-md-6 ms-0 ps-0">
-				{{ form_start(stockForm) }}
+				{{ form_start(stockForm, { 'attr' : {'onsubmit' : 'return validateForm();' } }) }}
 				<ul class="stocks list-unstyled" id="stocks-data" 
 				data-index="{{ stockForm.stocks|length > 0 ? stockForm.stocks|length : 0 }}" data-prototype="{{ form_widget(stockForm.stocks.vars.prototype)|e('html_attr') }}">
 					{% for stock in _context.stockForm.stocks %}
@@ -18,8 +23,12 @@
 						</li>
 					{% endfor %}
 				</ul>
+        
+         <p id="errors" class="text-danger"></p>
 				<div class="d-flex flex-row align-items-center">
+
 					{{ form_row(stockForm.submit)}}
+         
 					{{ form_end(stockForm) }}
 					<div class="ms-2 mb-3">
 						<button type="button" class="btn btn-action__success" data-collection-holder-class="stocks" id="add-new-button">Add new size</button>
@@ -35,6 +44,44 @@
 {% block javascripts %}
 	{{ parent() }}
 	<script>
+  const validateForm = () => {
+    const allColors = document.querySelectorAll('.color-select');
+    const allSizes = document.querySelectorAll('.size-select');
+
+  let colorsSelected = new Array();
+  let sizesSelected = new Array();
+  const convNodeListToArray = (nodeList) => {
+    let arr = Array();
+     nodeList.forEach( 
+            function(currentValue) {
+      arr.push(parseInt(currentValue.value));
+    });
+    return arr;
+  }
+
+    // Check repeating of colors and sizes
+ colorsSelected = convNodeListToArray(allColors);
+ sizesSelected = convNodeListToArray(allSizes);
+ let areNotDuplicated = true;
+ var isDuplicate = colorsSelected.some( function(item, index) {
+
+    if (colorsSelected.indexOf(item) != index) {
+      // indexRepeatSource is first element repeated
+      // indexRepeatTarget is the element to be highlighted as repeated
+      const indexRepeatSource = colorsSelected.indexOf(item)
+      const indexRepeatTarget = index;
+      let areNotduplicated = new Boolean(true);
+  
+      // now check if sizes of these are same
+      if (sizesSelected[indexRepeatSource] == sizesSelected[index]) {
+        const errors = document.getElementById('errors');
+        errors.innerHTML = "You have duplicated colors and sizes.";
+        areNotDuplicated = false;
+      }
+    };
+ })
+     return areNotDuplicated;
+  }
 document.addEventListener("DOMContentLoaded", function () {
   /* Get list of all stock subforms - ul parent element */
   const collectionHolder = document.getElementById("stocks-data");

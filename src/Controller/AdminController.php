@@ -73,6 +73,7 @@ class AdminController extends AbstractController
             $images = $fileHandler->uploadImages($data->getImages(), $data->getCategory());
             
             $product->setImages($images);
+
             $em = $doctrine->getManager();
             $em->persist($product);
             $em->flush();
@@ -155,7 +156,7 @@ public function stock(int $page, string $category, string $sorting): Response
  {
     // find by product
     $productStocks = $this->doctrine->getRepository(Stock::class)->findBy(['product' => $productId]);
-    $product = new Product();
+    $product = $this->doctrine->getRepository(Product::class)->find($productId);
     if (count($productStocks) > 0 ) {
     foreach ($productStocks as $entry) {
         $product->addStock($entry);
@@ -166,9 +167,20 @@ public function stock(int $page, string $category, string $sorting): Response
    
      $stockForm->handleRequest($request);
 
-   
      if ($stockForm->isSubmitted() && $stockForm->isValid()) {
-         dump($stockForm->getData());
+         $data = $stockForm->getData();
+         $stocks = $data->getStocks();
+            if ($stocks) {
+                $em = $this->doctrine->getManager();
+                foreach ($stocks as $stock) {
+                    $stock->setProduct($product);
+
+                    $em->persist($stock);
+                }
+                $em->flush();
+                $this->addFlash('notice', 'Your stock has been modified.');
+            }
+         
      }
   
      return $this->render('admin/edit-stock.html.twig', [

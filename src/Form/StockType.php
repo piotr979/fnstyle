@@ -31,11 +31,17 @@ class StockType extends AbstractType
         $builder
             ->add('qty', NumberType::class)
             ->add('color', EntityType::class, [
-                'class' => Color::class
+                'class' => Color::class,
+                'attr' => [
+                    'class' => 'color-select'
+                ]
                
             ])
             ->add('size', EntityType::class, [
-                'class' => Size::class
+                'class' => Size::class,
+                'attr' => [
+                    'class' => 'size-select'
+                ]
             ]
             )
         ;

@@ -1,17 +1,23 @@
 {% block body %}
 	<div class="col-6 col-sm-4 col-lg-3">
+
 		<div class="mini-item d-flex mt-4">
-			<img class="mini-item__image" src="{{ asset('assets/images/clothing/mens/pullover/christmas200x266.png') }}">
+		
+			<a href="{{ path('item-single', { id: product.id }) }}">
+			<img class="mini-item__image" 
+			src="{{ product.images|first }}">
+				</a>
 			<button class="mini-item-btn__like">
 				<i class="bi bi-suit-heart"></i>
 			</button>
 			<button class="btn btn-light mini-item-btn__add">Add to cart</button>
 		</div>
-
 		<div>
-			<small>Diamenco</small>
-			<p>Christmas pullover</p>
-			<p class="fw-bold">$46.99</p>
+	
+			<small>{{ product.brand }}</small>
+			<p>{{ product.model }}</p>
+			<p class="fw-bold">${{product.price }}</p>
+		
 		</div>
 	</div>
 {% endblock %}

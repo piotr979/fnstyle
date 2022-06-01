@@ -45,19 +45,20 @@ class FileHandler
     }
 
     // Adds full folder path to image file name =
-    public function getImagesWithPaths(array $images, Category $category)
+    public function getImagesWithPaths(array $images, ?Category $category, ?string $catName)
     {
         $imagesWithPaths = [];
         // dump($images);
         // dump($category->getName());
+        $categoryName = ($catName != null) ? $catName : $category->getName();
                 foreach($images as $image) {
                     if ($image == null) {
                         return null;
                     }
                     $imagesWithPaths[] = '/uploads/products/' .
-                        $category->getName() .  '/' . $image;
+                        $categoryName
+                        .  '/' . $image;
                 }
-           
         return $imagesWithPaths;
     }
 }

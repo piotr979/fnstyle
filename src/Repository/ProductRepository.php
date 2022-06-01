@@ -68,26 +68,60 @@ class ProductRepository extends ServiceEntityRepository
             return null;
         }
     }
-    public function findAllRelatedStock(int $id)
+    public function getProducts(string $category, int $amount)
     {
+
         $qb = $this->createQueryBuilder('p')
-            ->select('p.model,
-                     b.name, 
-                     s.qty, 
-                     c.id, 
-                     c.name AS colorName, 
-                     size.size AS stockSize')
+            ->select('p.id, b.name AS brand, p.model, p.price, c.name AS catName, p.images ')
             ->innerJoin('p.brand', 'b')
-            ->innerJoin('p.stocks','s')
-            ->leftJoin('s.color', 'c')
-            ->leftJoin('s.size', 'size')
-            ->where('p.id = :id')
-            ->setParameter('id', $id)
+            ->innerJoin('p.category', 'c')
+            ->where('c.name = :catName')
+            ->setParameter('catName', $category)
+            ->setMaxResults($amount)
             ->getQuery()
             ->getResult()
+           
             ;
-           return $qb;
+            return $qb;
     }
+    public function getSingleProduct(int $productId)
+    {
+        $qb = $this->createQueryBuilder('p')
+        ->select('p.id, b.name AS brand, p.model, p.price, c.name AS catName, p.images, 
+                stock.qty, size.size, color.name ')
+        ->innerJoin('p.brand', 'b')
+        ->innerJoin('p.category', 'c')
+        ->leftJoin('p.stocks', 'stock')
+        ->leftJoin('stock.size', 'size')
+        ->leftJoin('stock.color', 'color')
+        ->where('p.id = :productId')
+        ->setParameter('productId', $productId)
+        ->getQuery()
+        ->getResult()
+       
+        ;
+        return $qb;
+    }
+    // public function findAllRelatedStock(int $id)
+    // {
+    //     $qb = $this->createQueryBuilder('p')
+    //         ->select('p.model,
+    //                  b.name, 
+    //                  s.qty, 
+    //                  c.id, 
+    //                  c.name AS colorName, 
+    //                  size.size AS stockSize')
+    //         ->innerJoin('p.brand', 'b')
+    //         ->innerJoin('p.stocks','s')
+    //         ->leftJoin('s.color', 'c')
+    //         ->leftJoin('s.size', 'size')
+    //         ->where('p.id = :id')
+    //         ->setParameter('id', $id)
+    //         ->getQuery()
+    //         ->getResult()
+    //         ;
+    //        return $qb;
+    // }
 
 
     // /**

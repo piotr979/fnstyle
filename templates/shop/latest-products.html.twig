@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+	<section class="container">
+    <div class="row gx-5">
+    <div class="col-2">
+        <h3 class="mt-4">Pullovers</h3>
+        <p class="fw-bold">Size</p>
+        <label class="d-block"><input class="me-2 mb-2" type="checkbox" name="size" value="S">S</label>
+        <label class="d-block"><input class="me-2 mb-2" type="checkbox" name="size" value="S">XL</label>
+        <label class="d-block"><input class="me-2 mb-2" type="checkbox" name="size" value="S">L</label>
+        
+    <hr />
+
+      <p class="fw-bold">Brands</p>
+        <label class="d-block"><input class="me-2 mb-2" type="checkbox" name="size" value="S">Adidas</label>
+        <label class="d-block"><input class="me-2 mb-2" type="checkbox" name="size" value="S">Cockos</label>
+        <label class="d-block"><input class="me-2 mb-2" type="checkbox" name="size" value="S">Miro</label>
+        <hr />
+
+    <p class="fw-bold">Price</p>
+    <div class="d-flex price-range">
+    <input type="number" min="1" max="10000" placeholder="From">
+    <input class="ms-3" type="number" min="1" max="10000" placeholder="To">
+    </div>
+<div class="row justify-content-center">
+    <button class="btn-action mt-4 fw-bold">Apply</button>
+    </div>
+    </div>
+    <div class="col-10">
+        	<div class="row mt-5">
+			{% include('components/item-mini.html.twig') %}
+			{% include('components/item-mini.html.twig') %}
+			{% include('components/item-mini.html.twig') %}
+			{% include('components/item-mini.html.twig') %}
+            {% include('components/item-mini.html.twig') %}
+			{% include('components/item-mini.html.twig') %}
+			{% include('components/item-mini.html.twig') %}
+			{% include('components/item-mini.html.twig') %}
+		</div>
+    </div>
+    </div>
+    </section>
+
+	{% endblock %}

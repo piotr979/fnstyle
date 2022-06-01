@@ -70,7 +70,11 @@ div[id^="stock_collection_stocks_"] div {
 div[id^="stock_collection_stocks_"] input {
     width: 5rem;
 }
-
+.width-80-cover {
+    width: 88%;
+    object-fit: cover;
+    height: 88%;
+}
 $baseBorderRadius: 0;
 @import 'base/queries';
 @import 'abstract/variables';

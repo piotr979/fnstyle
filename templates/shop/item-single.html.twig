@@ -11,13 +11,13 @@
 	<section class="container item-single">
 		<div class="row">
 			<div class="col-12 col-md-6">
-				<img class="width-100" src="{{ asset('assets/images/clothing-big/mens/jackets/leatherjacket.png') }}" alt="Item image">
+				<img class="width-80-cover" src="{{ images|first }}" alt="Item image">
 			</div>
 			<div class="mt-2 mt-md-0 col-12 col-md-6">
 				<p>
-					<small class="text-secondary">Shinitzu</small>
+					<small class="text-secondary"></small>
 				</p>
-				<h2 class="fw-bold">$699.99</h2>
+				<h2 class="fw-bold">${{ product.price }}</h2>
 				<ul class="list-unstyled mt-4">
 					<li>
 						<small>Best quality materials</small>
@@ -30,25 +30,35 @@
 					</li>
 				</ul>
 				<div class="d-flex align-items-start">
+					{% if stocks|first.qty == 0 %}
+					<p>Item not in stock</p>
+						
+					
+					{% else %}
+					
 					<p class="pe-3">Size</p>
-					<select>
-						<option value="XS">XS</option>
-						<option value="L">L</option>
+				
+					<select id="size-select">
+						
+						{% for size in stocks|reducer('size') %}
+						
+						<option value="{{ size }}">{{ size }}</option>
+						{% endfor %}
 					</select>
                 </div>
 				
 					<div class="d-flex align-items-start">
 						<p class="pe-2">Color</p>
-						<select>
-							<option value="Red">Red</option>
-							<option value="Blue">Blue</option>
+						<select id="color-select">
+							
 						</select>
 					</div>
-	<p>Availability: 7 in stock</p>
+	<p>Availability: <span id="availability"></span> in stock</p>
 
 				<div class="d-flex align-items-center">
                 <input class="amt-input me-4 " type="number" min="0" max="3" value="1">
                 <button class="btn btn-action px-5">Add to cart</button>
+				{% endif %}
                 </div>
 			</div>
 		</section>
@@ -65,3 +75,59 @@
 	</section>
 
 	{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+	document.addEventListener("DOMContentLoaded", function() { 
+		
+	const stocks = JSON.parse('{{ stocks|json_encode|raw }}');
+
+	console.log(stocks);
+	let colorSelect = document.getElementById('color-select');
+	let sizeSelect = document.getElementById('size-select');
+
+	let avail = document.getElementById('availability');
+
+	const setQuantity = (selectedColor, selectedSize ) => {
+		console.log(selectedColor, selectedSize);
+		const stock = stocks.filter( stock => 
+					stock.size == selectedSize &&
+					stock.colorName == selectedColor
+					)
+		if (stock.length > 0) {
+		avail.innerHTML = stock[0].qty;
+		} else {
+			avail.innerHTML = '0';
+		}
+	
+	}
+	const updateColorSelect = (selectedSize) => {
+			const relatedStocks = stocks.filter( stock => stock.size == selectedSize);
+		colorSelect.innerHTML = relatedStocks.map ( stock =>
+				'<option value="'+stock.colorName+'">'+stock.colorName+'</option>');
+	}
+
+	updateColorSelect(sizeSelect.value);
+	setQuantity(colorSelect.value, sizeSelect.value);
+	colorSelect.addEventListener('change', e => {
+		setQuantity(colorSelect.value, sizeSelect.value);
+	})
+	sizeSelect.addEventListener('change', (e) => {
+		const selectedSize = e.target.value;
+
+		// set quantity
+		
+		// get Colors and
+	updateColorSelect(selectedSize)
+		setQuantity(colorSelect.value, sizeSelect.value);
+		// set Colors and quantity
+	})
+
+
+	})
+	// populate selects
+
+
+</script>
+{% endblock %}

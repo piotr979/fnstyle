@@ -10,7 +10,7 @@
 			<div class="slide-text">
 				<h4 class="slide-text__subhead animate__animated animate__slideInUp">New season</h4>
 				<h2 class="slide-text__head animate__animated animate__slideInUp">New arrivals</h2>
-				<a href="index.php" class="btn btn-slider mt-2">See latest</a>
+				<a href="{{ path('latest_products') }}" class="btn btn-slider mt-2">See latest</a>
 			</div>
 			<div class="slide-overlay">
 				<img class="slide__image" src="{{ asset('assets/images/slider/tamara-bellis-WdPfMcpeQas-unsplash 1920x728.jpg') }}" alt=" ">
@@ -54,10 +54,10 @@
 
 	<section class="container">
 		<div class="row mt-5 gx-5">
-			{% include('components/item-mini.html.twig') %}
-			{% include('components/item-mini.html.twig') %}
-			{% include('components/item-mini.html.twig') %}
-			{% include('components/item-mini.html.twig') %}
+			{% for product in products %}
+			{% include 'components/item-mini.html.twig' with { 
+					'products' : product } %}
+			{% endfor %}
 		</div>
 	</section>
 

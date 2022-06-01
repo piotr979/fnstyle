@@ -8,6 +8,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+
+#[ORM\HasLifecycleCallbacks]
+
 class Product
 {
     #[ORM\Id]
@@ -33,6 +36,9 @@ class Product
 
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Stock::class)]
     private $stocks;
+
+    #[ORM\Column(type: 'datetime')]
+    private $date;
 
     public function __construct()
     {
@@ -130,5 +136,20 @@ class Product
         }
 
         return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    #[ORM\PrePersist]
+    public function setDate()
+    {
+        $this->date = new \DateTime();
+    }
+    public function __toString()
+    {
+        dump($this);
     }
 }

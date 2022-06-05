@@ -20,9 +20,11 @@ use Knp\Component\Pager\PaginatorInterface;
 class ProductRepository extends ServiceEntityRepository
 {
     private PaginatorInterface $paginator;
+    private ManagerRegistry $doctrine;
     public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {
         parent::__construct($registry, Product::class);
+        $this->doctrine = $registry;
         $this->paginator = $paginator;
     }
 
@@ -66,6 +68,27 @@ class ProductRepository extends ServiceEntityRepository
             return $paginated;
         } else {
             return null;
+        }
+    }
+    public function getSpecificProductsPaginated(
+            int $page,
+            string $category,
+            array $sizes,
+            array $brands,
+            int $priceFrom,
+            int $priceTo) 
+    {
+        $conn = $this->getEntityManager()->getConnection();
+       $sql = "
+        SELECT product.price, stock.qty FROM product
+        JOIN stock
+        ON product.id = stock.product_id";
+        $stmt = $conn->prepare($sql);
+        $query = $stmt->executeQuery();
+
+           dump($query->fetchAllAssociative());exit;
+        if (isset($query)) {
+            $paginated = $this->paginator->paginate($query, $page, 16);
         }
     }
     public function getProducts(string $category, int $amount)

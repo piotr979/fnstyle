@@ -32,16 +32,11 @@
 				<div class="d-flex align-items-start">
 					{% if stocks|first.qty == 0 %}
 					<p>Item not in stock</p>
-						
-					
+
 					{% else %}
-					
 					<p class="pe-3">Size</p>
-				
 					<select id="size-select">
-						
 						{% for size in stocks|reducer('size') %}
-						
 						<option value="{{ size }}">{{ size }}</option>
 						{% endfor %}
 					</select>
@@ -53,11 +48,12 @@
 							
 						</select>
 					</div>
-	<p>Availability: <span id="availability"></span> in stock</p>
+	
+				<p>Availability: <span id="availability"></span> in stock</p>
 
 				<div class="d-flex align-items-center">
-                <input class="amt-input me-4 " type="number" min="0" max="3" value="1">
-                <button class="btn btn-action px-5">Add to cart</button>
+                <input id="amount-input" class="amt-input me-4 " type="number" min="0" max="3" value="1">
+                <button id="add-to-cart-button" class="btn btn-action px-5">Add to cart</button>
 				{% endif %}
                 </div>
 			</div>
@@ -66,31 +62,29 @@
         <section class="container">
         <h3 class="mt-5">Other products</h3>
 		<div class="row">
-			{% include('components/item-mini.html.twig') %}
-			{% include('components/item-mini.html.twig') %}
-			{% include('components/item-mini.html.twig') %}
-			{% include('components/item-mini.html.twig') %}
+			{% for product in productsList %}
+			{% include 'components/item-mini.html.twig' with {
+					'products': product } %}
+			{% endfor %}
 		</div>
-        
 	</section>
-
 	{% endblock %}
 
 {% block javascripts %}
 {{ parent() }}
 <script>
 	document.addEventListener("DOMContentLoaded", function() { 
-		
+	
+	// This script below handles inputs and adding to cart.
+	// Depending on selected size updates colors and quanitity of available items
 	const stocks = JSON.parse('{{ stocks|json_encode|raw }}');
 
-	console.log(stocks);
 	let colorSelect = document.getElementById('color-select');
 	let sizeSelect = document.getElementById('size-select');
 
 	let avail = document.getElementById('availability');
 
 	const setQuantity = (selectedColor, selectedSize ) => {
-		console.log(selectedColor, selectedSize);
 		const stock = stocks.filter( stock => 
 					stock.size == selectedSize &&
 					stock.colorName == selectedColor
@@ -100,29 +94,32 @@
 		} else {
 			avail.innerHTML = '0';
 		}
-	
 	}
 	const updateColorSelect = (selectedSize) => {
 			const relatedStocks = stocks.filter( stock => stock.size == selectedSize);
 		colorSelect.innerHTML = relatedStocks.map ( stock =>
 				'<option value="'+stock.colorName+'">'+stock.colorName+'</option>');
 	}
+	if ( Object.keys(stocks[0]).length != 0) {
+		console.log('is zero');
 
-	updateColorSelect(sizeSelect.value);
+			updateColorSelect(sizeSelect.value);
 	setQuantity(colorSelect.value, sizeSelect.value);
+
 	colorSelect.addEventListener('change', e => {
 		setQuantity(colorSelect.value, sizeSelect.value);
 	})
 	sizeSelect.addEventListener('change', (e) => {
 		const selectedSize = e.target.value;
 
-		// set quantity
-		
-		// get Colors and
 	updateColorSelect(selectedSize)
 		setQuantity(colorSelect.value, sizeSelect.value);
 		// set Colors and quantity
 	})
+	}
+	
+
+
 
 
 	})

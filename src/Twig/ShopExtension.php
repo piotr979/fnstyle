@@ -16,6 +16,7 @@ class ShopExtension extends AbstractExtension
     {
         return [
             new TwigFilter('reducer', [$this, 'reduceArray']),
+            new TwigFilter('addUploadPath', [$this, 'addUploadPath'])
         ];
     }
     public function reduceArray(array $data, string $key)
@@ -26,5 +27,10 @@ class ShopExtension extends AbstractExtension
         }
         
         return array_unique($items);
+    }
+    public function addUploadPath(array $data)
+    {
+        // TODO:
+        // same as FileHandler function to add path to uploaded file
     }
 }

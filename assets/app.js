@@ -9,6 +9,7 @@
 import './styles/app.scss';
 import './js/chapter-navigator';
 import './js/custom.js';
+console.log('test');
 /* import './js/jquery.min.js';
 import './js/jquery.uploadifive.min.js';
 */

@@ -14,9 +14,6 @@
         text-overflow: none;
         max-width: 100%;
     }
-}
-
-@include media-breakpoint-up(md) {
     .top-search__input {
         width: 20rem;
     }
@@ -36,6 +33,10 @@
     .image-with-button img {
         width: 100%;
       }
+    .shopping-cart-modal {
+        width: 400px;
+        border-left: 1px solid #ddd;
+    }
 }
 @include media-breakpoint-up(lg) {
    

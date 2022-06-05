@@ -14,6 +14,7 @@
     const slideText = document.querySelectorAll(".slide-text__head");
     const slideSubText = document.querySelectorAll(".slide-text__subhead");
     console.log(slideText);
+
     setInterval(
       function () {
         slides.item(currentSlide).style.opacity = 0;
@@ -40,5 +41,22 @@
       5000
     );
   }
+
+
+		const modalButton = document.getElementById('cart-modal');
+		const switchButton = document.getElementById('cart-modal-switcher');
+		const main = document.getElementById('main');
+		const transformModal = () => {
+			main.classList.toggle("nav-open");
+		}
+		switchButton.addEventListener('click', function() {
+			transformModal();
+		})
+		modalButton.addEventListener('click', function() {
+			transformModal();
+		})
+
+
+
 
 

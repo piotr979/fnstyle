@@ -4,7 +4,6 @@
 {% endblock %}
 
 {% block body %}
-
 	<section id="my-slider" class="slider">
 		<div class="slide">
 			<div class="slide-text">
@@ -75,10 +74,11 @@
 				<div class="thumbnail-with-button mt-4">
 					<img src="{{ asset('assets/images/extras/tamara-bellis-68csPWTnafo-unsplash.png') }}">
 						<h2 class="thumbnail-heading slide-text__subhead">Summer Vibes</h2>
-					<a class="thumbnail-with-button__link btn-womens" href="{{ path('items-category', { category: "default" }) }}">See collection</a>
+					<a class="thumbnail-with-button__link btn-womens" href="{{ path('items_category', { category: "default" }) }}">See collection</a>
 				</div>
 			</div>
 		</div>
 	</section>
 
 {% endblock %}
+

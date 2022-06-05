@@ -20,19 +20,17 @@ use Doctrine\Persistence\ManagerRegistry;
 class ShopController extends AbstractController
 {
     private ManagerRegistry $doctrine;
-
-    public function __construct(ManagerRegistry $doctrine) 
-    {
+    private FileHandler $fileHandler;
+    public function __construct(ManagerRegistry $doctrine, FileHandler $fileHandler) 
+    {   
         $this->doctrine = $doctrine;
+        $this->fileHandler = $fileHandler;
     }
     #[Route('/', name: 'home')]
     public function index(FileHandler $fileHandler): Response
     {
         $products = $this->doctrine->getRepository(Product::class)->getProducts('Dresses', 4);
-        foreach($products as &$product) {
-            $images = $fileHandler->getImagesWithPaths($product['images'], null, 'Dresses');
-            $product['images'] = $images;
-        }
+        $products = $this->addPathToImages($products, 'Dresses');
         return $this->render('shop/index.html.twig', [
             'products' => $products
         ]);
@@ -47,6 +45,10 @@ class ShopController extends AbstractController
     {
         $sizesReduced = [];
         $product = $this->doctrine->getRepository(Product::class)->find($id);
+        
+        $productsList = $this->doctrine->getRepository(Product::class)->
+                getProducts($product->getCategory()->getName(),
+                    4);
         $stocks = $this->doctrine->getRepository(Stock::class)->findAllRelatedToProduct($id);
         $images = $fileHandler->getImagesWithPaths($product->getImages(), $product->getCategory(), null);
         if (empty($product)) {
@@ -64,16 +66,48 @@ class ShopController extends AbstractController
     // and separate sizes + colors
         return $this->render('shop/item-single.html.twig', [
             'product' => $product,
+            'productsList' => $this->addPathToImages($productsList, 
+                preg_replace('/\s+/', '_', 
+                $product->getCategory()->getName())),
             'images' => $images,
             'stocks' => $stocks
         ]);
     }
 
 
-    #[Route('/items-category/{category}', name: "items-category")]
+    #[Route('/items-category/{category}', name: "items_category")]
     public function itemsCategory($category = 'default')
     {
-        return $this->render('shop/items-category.html.twig');
+        $products = $this->doctrine->getRepository(Product::class)->getProducts('Dresses',8);
+        $products2 = $this->doctrine->getRepository(Product::class)->
+                getSpecificProductsPaginated(
+                    1, 
+                    'Dresses', 
+                    [2,3],
+                    ['Madextreme'],
+                    10,
+                    30
+                );
+        return $this->render('shop/items-category.html.twig', [
+            'products' => $this->addPathToImages($products, 
+            preg_replace('/\s+/', '_', 
+            'Dresses'))
+        ]);
+    }
+
+    #[Route('shopping-bag', name: 'shopping_bag')]
+    public function shoppingBag()
+    {
+        return new Response('shopping bag');
+    }
+
+    private function addPathToImages($products, string $category)
+    {
+        foreach($products as &$product) {
+            $images = $this->fileHandler->getImagesWithPaths($product['images'], null, $category);
+            $product['images'] = $images;
+        }
+        return $products;
     }
   
 }

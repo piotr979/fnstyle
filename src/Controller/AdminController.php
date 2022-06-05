@@ -97,7 +97,7 @@ class AdminController extends AbstractController
     {
         $product = $this->doctrine->getRepository(Product::class)->find($id);
         $sizes = $this->doctrine->getRepository(Size::class)->findAll();
-        $images = $fileHandler->getImagesWithPaths($product->getImages(), $product->getCategory());
+        $images = $fileHandler->getImagesWithPaths($product->getImages(), $product->getCategory(), '');
         $existingImages = $product->getImages();
         if ($images === null) {
             $images = [];

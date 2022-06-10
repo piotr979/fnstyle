@@ -62,6 +62,7 @@ class ShopController extends AbstractController
             $stocks[]
              = $stock;
     }
+    
     // Product is array with repeated name,brand,etc
     // and separate sizes + colors
         return $this->render('shop/item-single.html.twig', [
@@ -98,7 +99,7 @@ class ShopController extends AbstractController
     #[Route('shopping-bag', name: 'shopping_bag')]
     public function shoppingBag()
     {
-        return new Response('shopping bag');
+        return $this->render('shop/shopping-bag.html.twig');
     }
 
     private function addPathToImages($products, string $category)

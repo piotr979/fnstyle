@@ -18,6 +18,8 @@
 					<small class="text-secondary"></small>
 				</p>
 				<h2 class="fw-bold">${{ product.price }}</h2>
+				<p class="fw-bold mb-0">{{ product.brand }}</p>
+				<p>{{ product.model }}</p>
 				<ul class="list-unstyled mt-4">
 					<li>
 						<small>Best quality materials</small>
@@ -53,7 +55,10 @@
 
 				<div class="d-flex align-items-center">
                 <input id="amount-input" class="amt-input me-4 " type="number" min="0" max="3" value="1">
-                <button id="add-to-cart-button" class="btn btn-action px-5">Add to cart</button>
+                <button data-productname="{{ product.brand.name }}"
+						data-productmodel="{{ product.model}}"
+						 id="add-to-cart-button" class="btn btn-action px-5"
+					>Add to cart</button>
 				{% endif %}
                 </div>
 			</div>
@@ -73,11 +78,14 @@
 {% block javascripts %}
 {{ parent() }}
 <script>
+
 	document.addEventListener("DOMContentLoaded", function() { 
 	
 	// This script below handles inputs and adding to cart.
 	// Depending on selected size updates colors and quanitity of available items
 	const stocks = JSON.parse('{{ stocks|json_encode|raw }}');
+	// id,price,model
+	// category,brand,images(array)
 
 	let colorSelect = document.getElementById('color-select');
 	let sizeSelect = document.getElementById('size-select');
@@ -101,9 +109,8 @@
 				'<option value="'+stock.colorName+'">'+stock.colorName+'</option>');
 	}
 	if ( Object.keys(stocks[0]).length != 0) {
-		console.log('is zero');
 
-			updateColorSelect(sizeSelect.value);
+	updateColorSelect(sizeSelect.value);
 	setQuantity(colorSelect.value, sizeSelect.value);
 
 	colorSelect.addEventListener('change', e => {
@@ -117,14 +124,6 @@
 		// set Colors and quantity
 	})
 	}
-	
-
-
-
-
-	})
-	// populate selects
-
-
+})
 </script>
 {% endblock %}

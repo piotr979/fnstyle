@@ -7,9 +7,13 @@
 
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.scss';
+
 import './js/chapter-navigator';
-import './js/custom.js';
-console.log('test');
+import './js/shopping-cart-manager';
+import './js/custom';
+
+
+
 /* import './js/jquery.min.js';
 import './js/jquery.uploadifive.min.js';
 */

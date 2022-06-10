@@ -22,6 +22,7 @@
 
         console.log(currentSlide);
         console.log(slideText.length);
+      
 
         if (currentSlide < slideText.length) {
           slideText[currentSlide].classList.remove("animate__slideInUp");
@@ -51,10 +52,13 @@
 		}
 		switchButton.addEventListener('click', function() {
 			transformModal();
+  
 		})
 		modalButton.addEventListener('click', function() {
 			transformModal();
 		})
+
+  
 
 
 

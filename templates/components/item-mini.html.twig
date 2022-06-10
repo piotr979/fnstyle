@@ -10,7 +10,9 @@
 			<button class="mini-item-btn__like">
 				<i class="bi bi-suit-heart"></i>
 			</button>
-			<button class="btn btn-light mini-item-btn__add">Add to cart</button>
+			<a href="{{ path('item-single', { id: product.id }) }}"
+				 class="btn btn-light mini-item-btn__add">See details</a>
+		
 		</div>
 		<div>
 	

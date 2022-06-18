@@ -23,10 +23,12 @@ import ShoppingCart from './shopping-cart';
         parentItem.appendChild(smallItem);
         listItem.appendChild(parentItem);
     }
+
     const updateNumberByCartButton = () => {
     const cartAnchor = document.getElementById('cart-anchor');
     cartAnchor.innerText = `(${shoppingCart.cartItems.length})`;
     }
+
     const populateList = (shoppingUl) => {
                // shoppingUl is HTML collection
         // shoppingCart is JS array of objects
@@ -55,16 +57,23 @@ document.addEventListener('DOMContentLoaded', function() {
     populateList(shoppingUl);
     const addToCartBtn = document.getElementById('add-to-cart-button');
     updateNumberByCartButton();
+    if (addToCartBtn != null) {
+
+    
     addToCartBtn.addEventListener('click', (e) => {
 	  
+    const productId = addToCartBtn.dataset.id;
     const productBrand = addToCartBtn.dataset.productname;
     const productModel = addToCartBtn.dataset.productmodel;
+    const qty = parseInt(document.getElementById('amount-input').value);
+
     const color = colorSelect.value;
     const size = sizeSelect.value;
-   
+    
     shoppingCart.addItemToCart(
         {
-            qty: 1,
+            id: productId,
+            qty: qty,
             brand: productBrand,
             name: productModel,
             color: color,
@@ -73,7 +82,25 @@ document.addEventListener('DOMContentLoaded', function() {
     );
    
     populateList(shoppingUl);
- 
+    updateNumberByCartButton();
+    let response = fetch( "/../checkout", {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json'  
+        },
+        body: JSON.stringify( {
+            data: shoppingCart.cartItems
+        })
+    }).then((response) => {
+        console.log(response.status);
+        if (response.status === 200) {
+            return response.text()
+        }
+    }).then(( response) => {
+        console.log(response);
+    });
+
 
     })
+}
 });

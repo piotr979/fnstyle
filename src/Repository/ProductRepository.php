@@ -9,6 +9,7 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Category;
+use App\Service\FileHandler;
 use Knp\Component\Pager\PaginatorInterface;
 
 /**
@@ -21,11 +22,13 @@ class ProductRepository extends ServiceEntityRepository
 {
     private PaginatorInterface $paginator;
     private ManagerRegistry $doctrine;
-    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
+    private FileHandler $fileHandler;
+    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator, FileHandler $fileHandler)
     {
         parent::__construct($registry, Product::class);
         $this->doctrine = $registry;
         $this->paginator = $paginator;
+        $this->fileHandler = $fileHandler;
     }
 
     /**
@@ -80,15 +83,36 @@ class ProductRepository extends ServiceEntityRepository
     {
         $conn = $this->getEntityManager()->getConnection();
        $sql = "
-        SELECT product.price, stock.qty FROM product
+        SELECT product.id, product.price, stock.qty, product.images,
+            product.model, size.size AS size, color.name AS color,
+            brand.name AS brand, category.name AS catName
+        FROM product
         JOIN stock
-        ON product.id = stock.product_id";
+        ON product.id = stock.product_id
+        JOIN brand
+        ON product.brand_id = brand.id
+        JOIN category
+        ON product.category_id = category.id
+        JOIN size
+        ON stock.size_id = size.id
+        JOIN color
+        ON stock.color_id = color.id
+        WHERE size IN (32,34) 
+        GROUP BY model
+        ";
         $stmt = $conn->prepare($sql);
         $query = $stmt->executeQuery();
 
-           dump($query->fetchAllAssociative());exit;
-        if (isset($query)) {
-            $paginated = $this->paginator->paginate($query, $page, 16);
+         $products = $query->fetchAllAssociative();
+      
+        if (isset($products)) {
+          
+            $data = $this->addPathToImages($products, 'Dresses');
+            
+            $paginated = $this->paginator->paginate($data, $page, 16);
+            return $paginated;
+        } else {
+            return null;
         }
     }
     public function getProducts(string $category, int $amount)
@@ -175,4 +199,17 @@ class ProductRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    private function addPathToImages($products)
+    {
+        foreach($products as &$product) {
+            $images = $this->fileHandler->
+                getImagesWithPaths(json_decode($product['images']), null, 
+                                    preg_replace('/\s+/', '_', 
+                                    $product['catName'])
+                                );
+            $product['images'] = $images;
+        }
+        return $products;
+    }
 }

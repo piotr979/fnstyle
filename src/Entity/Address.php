@@ -31,15 +31,12 @@ class Address
     private $phoneNumber;
 
     #[ORM\OneToMany(mappedBy: 'address', targetEntity: User::class)]
-    private $User;
+    private $user;
 
-    #[ORM\OneToMany(mappedBy: 'address', targetEntity: User::class)]
-    private $users;
 
     public function __construct()
     {
-        $this->User = new ArrayCollection();
-        $this->users = new ArrayCollection();
+        $this->user = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -112,36 +109,29 @@ class Address
      */
     public function getUser(): Collection
     {
-        return $this->User;
+        return $this->user;
     }
 
-    public function addUser(User $User): self
+    public function addUser(User $user): self
     {
-        if (!$this->User->contains($User)) {
-            $this->User[] = $User;
-            $User->setAddress($this);
+        if (!$this->user->contains($user)) {
+            $this->user[] = $user;
+            $user->setAddress($this);
         }
 
         return $this;
     }
 
-    public function removeUser(User $User): self
+    public function removeUser(User $user): self
     {
-        if ($this->User->removeElement($User)) {
+        if ($this->user->removeElement($user)) {
             // set the owning side to null (unless already changed)
-            if ($User->getAddress() === $this) {
-                $User->setAddress(null);
+            if ($user->getAddress() === $this) {
+                $user->setAddress(null);
             }
         }
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
 }

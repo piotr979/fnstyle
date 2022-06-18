@@ -1,0 +1,20 @@
+{% macro delete_from_bag_modal(id, deleteLink) %}
+  
+        <div id="deleteModal-{{ id }}" class="modal fade" role="dialog">
+            <div class="modal-dialog" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Are you sure?</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>You are going to remove it from bag.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="{{ deleteLink }}" class="btn btn-action">Yes</a>
+                       <button id="cancel-button" data-bs-dismiss="modal" class="btn btn-secondary cancel-button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+{% endmacro %}

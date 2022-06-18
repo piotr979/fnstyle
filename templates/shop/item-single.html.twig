@@ -55,7 +55,8 @@
 
 				<div class="d-flex align-items-center">
                 <input id="amount-input" class="amt-input me-4 " type="number" min="0" max="3" value="1">
-                <button data-productname="{{ product.brand.name }}"
+                <button data-id="{{ product.id }}" 
+						data-productname="{{ product.brand.name }}"
 						data-productmodel="{{ product.model}}"
 						 id="add-to-cart-button" class="btn btn-action px-5"
 					>Add to cart</button>
@@ -89,6 +90,8 @@
 
 	let colorSelect = document.getElementById('color-select');
 	let sizeSelect = document.getElementById('size-select');
+	
+	
 
 	let avail = document.getElementById('availability');
 

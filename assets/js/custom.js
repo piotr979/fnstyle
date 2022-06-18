@@ -50,13 +50,17 @@
 		const transformModal = () => {
 			main.classList.toggle("nav-open");
 		}
+    if (switchButton != null && modalButton != null ) {
 		switchButton.addEventListener('click', function() {
 			transformModal();
   
 		})
+  
+
 		modalButton.addEventListener('click', function() {
 			transformModal();
 		})
+  }
 
   
 

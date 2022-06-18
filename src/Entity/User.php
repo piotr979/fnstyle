@@ -33,7 +33,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
     private $lastName;
 
-    #[ORM\ManyToOne(targetEntity: Address::class, inversedBy: 'users')]
+    #[ORM\ManyToOne(targetEntity: Address::class, inversedBy: 'user')]
     private $address;
 
     public function getId(): ?int

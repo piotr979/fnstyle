@@ -5,25 +5,13 @@
 	<section class="container">
 		<div class="row ms-3 ms-sm-2 ms-md-0">
 			<div class="col ps-0">
-			
-			
-
-				<h2 class="fw-bold">Items catalog</h2>
+				<h2 class="fw-bold mt-2">Your bag</h2>
 			</div>
 		</div>
 
-	
+		
 
-		<div class="row mt-4 mb-2">
-			<div class="col">
-				<div class="top-search">
-					<i class="bi-search top-search__icon"></i>
-					<input class="top-search__input" type="search" placeholder="Search...">
-				</div>
-			</div>
-		</div>
-
-		<div class="row">
+		<div class="row mt-2">
 			<div class="col">
 				<table class="table">
 
@@ -31,51 +19,88 @@
 						<tr>
 							<th scope="col" class="d-none d-sm-table-cell">#</th>
 							<th scope="col">Brand</th>
-							<th scope="col">Model</th>
+							<th scope="col">Name</th>
 							<th scope="col" class="d-none d-sm-table-cell">Price</th>
 							<th scope="col" class="d-none d-sm-table-cell">Qty</th>
-							<th scope="col" class="d-none d-sm-table-cell">Category</th>
+						
 							<th scope="col" class="d-none d-sm-table-cell">Actions</th>
 							<th scope="col" class="d-sm-none">Act</th>
 						</tr>
 					</thead>
 
 					<tbody>
-					    {% import 'admin/macros/macro-delete-modal.html.twig' as del_macro %}
+					    {% import 'macros/delete-from-bag-modal.html.twig' as del_macro %}
 							{% set count = 1 %}
 						{% for product in products %}
-						<tr>
+						<tr class="product-row">
 						<th class="d-none d-sm-table-cell" scope="row">{{ count }}</th>
 									{% set count = count + 1 %}
 							<td>{{ product.brand }}</td>
-							<td>{{ product.model }}</td>
-							<td class="d-none d-sm-table-cell">{{ product.price }}</td>
+							<td>{{ product.name }}</td>
+							<td class="d-none d-sm-table-cell">{{ 145 }}</td>
 							<td class="d-none d-sm-table-cell">
-								{{ product.total_qty }}
+								{{ 120 }}
 							</td>
-							<td class="d-none d-sm-table-cell">{{ product.category }}</td>
-							<td>
-									<a href="{{ path('edit-product', { id: product.id } ) }}" class="btn-icon">
-									<i class="bi bi-pencil-square"></i>
-								</a>
+						
+							<td >
+									
 								<button class="btn-trash" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ product.id }}">
 								<i class="bi bi-trash"></i>
 								</button>
-								 {{ del_macro.create_delete_modal(product.id,
-		                        path('remove_item', { 'id': product.id, 'class': 'Product' })) }}
+								 {{ del_macro.delete_from_bag_modal(product.id,
+		                        path('shopping_bag') ) }}
 
 							</td>
 						</tr>
 						{% endfor %}
 					</tbody>
 	</table>
-		{# #### PAGINATION CONTROLS STARTS HERE ### #}
-				{% if products is not null %}
-					<div class="d-flex justify-content-center mt-0 my-3 mt-md-5">
-						{{ knp_pagination_render(products) }}
-					</div>
-				{% endif %}
-				{# #####  PAGINATION CONTROLS ENDS HERE ##### #}
-	<a href="{{ path('add_product') }}" class="btn btn-action text-light">Add product</a>
-</div></div></section>{% endblock %}
+	<div class="row d-flex flex-row justify-content-between">
+	<div class="col-2">
+	<button id="clear-list" class="btn btn-action text-light">Clear list</button>
+	</div>
+	<div class="col-2">
+	<button id="" class="btn btn-action text-light">Go to payment</button>
+	</div>
+	</div>
+	
+	</div>
+	</div>
+</section>
+{% endblock %}
+{% block javascripts %}
+
+{{ parent() }}
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+
+let products = [];
+products = JSON.parse('{{ products|json_encode|raw }}');
+const clrListBtn = document.getElementById('clear-list');
+const clearCartModalAndStorage = () => {
+	localStorage.setItem('cartItems', []);
+		document.getElementById('cart-anchor').innerText = '(0)';
+}
+clrListBtn.addEventListener('click', (ev) => {
+	ev.preventDefault();
+	clearCartModalAndStorage();
+	const url = 'clear-cart';
+	location.href = url;
+	
+})
+console.log(products.length);
+	if (products.length === 0 ) {
+		
+		let productRows = document.querySelectorAll('.product-row');
+		console.log(productRows);
+		productRows.forEach( product => {
+			product.parentElement.removeChild(product);
+		})
+		clearCartModalAndStorage();
+	
+	}
+})
+</script>
+{% endblock %}
 

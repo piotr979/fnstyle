@@ -105,6 +105,45 @@ class ShopController extends AbstractController
             'sizes' => $sizes
            ]);
     }
+    #[Route('/items-filter/{sizes}/{brands}/{priceFrom}/{priceTo}', 
+            name: "items_filter",
+            defaults: [
+                'sizes' => '',
+                'brands' => '',
+            ],
+            options: ['expose' => 'true'])]
+    public function itemsFilter($sizes = '',
+                                $brands = '',
+                                $priceFrom = 0,
+                                $priceTo = 999999)
+    {
+    
+       $brand = $this->doctrine->getRepository(Brand::class)->findAll();
+       $size = $this->doctrine->getRepository(Size::class)->findAll();
+       if ($sizes === '') {
+        foreach ($size as $item) {
+            $sizes .= $item->getSize();
+            $sizes .= ',';
+        }
+       }
+       
+        $products = $this->doctrine->getRepository(Product::class)->
+                getSpecificProductsPaginated(
+                    page: 1, 
+                    category: 'Dresses', 
+                    sizes: $sizes === '' ? $size : $sizes,
+                    brands: $brands,
+                    priceFrom: $priceFrom,
+                    priceTo: $priceTo
+                );
+         
+        return $this->render('shop/items-category.html.twig', [
+            'products' => $products,
+            'brands' => $brand,
+            'sizes' => $size
+           ]);
+    }
+
     #[Route('checkout', name: 'checkout')]
     public function checkout(Request $request, SessionInterface $session)
     {

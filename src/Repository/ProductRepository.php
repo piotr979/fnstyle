@@ -76,12 +76,13 @@ class ProductRepository extends ServiceEntityRepository
     public function getSpecificProductsPaginated(
             int $page,
             string $category,
-            array $sizes,
-            array $brands,
+            string $sizes,
+            string $brands,
             int $priceFrom,
             int $priceTo) 
     {
         $conn = $this->getEntityManager()->getConnection();
+        $sizes2 = "32,34";
        $sql = "
         SELECT product.id, product.price, stock.qty, product.images,
             product.model, size.size AS size, color.name AS color,
@@ -97,14 +98,17 @@ class ProductRepository extends ServiceEntityRepository
         ON stock.size_id = size.id
         JOIN color
         ON stock.color_id = color.id
-        WHERE size IN (32,34) 
+        WHERE size IN ( :size1, :size2 ) 
         GROUP BY model
         ";
         $stmt = $conn->prepare($sql);
-        $query = $stmt->executeQuery();
+        $query = $stmt->executeQuery(
+            [ 'size1' => '32',
+            'size2' => '34'
+        ]);
 
          $products = $query->fetchAllAssociative();
-      
+      dump($products);
         if (isset($products)) {
           
             $data = $this->addPathToImages($products, 'Dresses');

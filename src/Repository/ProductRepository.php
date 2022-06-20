@@ -73,45 +73,47 @@ class ProductRepository extends ServiceEntityRepository
             return null;
         }
     }
+
+    /**
+     * This is most versatile function for filtering products
+     */
     public function getSpecificProductsPaginated(
             int $page,
-            string $category,
-            string $sizes,
-            string $brands,
+            array $category,
+            array $sizes,
+            array $brands,
             int $priceFrom,
             int $priceTo) 
     {
         $conn = $this->getEntityManager()->getConnection();
-        $sizes2 = "32,34";
-       $sql = "
-        SELECT product.id, product.price, stock.qty, product.images,
-            product.model, size.size AS size, color.name AS color,
-            brand.name AS brand, category.name AS catName
-        FROM product
-        JOIN stock
-        ON product.id = stock.product_id
-        JOIN brand
-        ON product.brand_id = brand.id
-        JOIN category
-        ON product.category_id = category.id
-        JOIN size
-        ON stock.size_id = size.id
-        JOIN color
-        ON stock.color_id = color.id
-        WHERE size IN ( :size1, :size2 ) 
-        GROUP BY model
-        ";
-        $stmt = $conn->prepare($sql);
-        $query = $stmt->executeQuery(
-            [ 'size1' => '32',
-            'size2' => '34'
-        ]);
 
-         $products = $query->fetchAllAssociative();
-      dump($products);
-        if (isset($products)) {
+            $qb = $this->createQueryBuilder('p')
+            ->select("p.id, p.price, stock.qty, p.images, category.name,
+            p.model, s.size AS size, c.name AS color,
+            b.name AS brand, category.name AS catName")
+            ->innerJoin('p.stocks', 'stock')
+            ->innerJoin('p.brand', 'b')
+            ->innerJoin('stock.size','s')
+            ->innerJoin('stock.color', 'c')
+            ->innerJoin('p.category', 'category')
+            ->where('category.name IN ( :category) ')
+            ->andWhere('s.size IN (:sizes)')
+            ->andWhere('b.name IN (:brands)')
+            ->andWhere('p.price > :priceFrom')
+            ->andWhere('p.price < :priceTo')
+            ->setParameter('category', $category, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
+            ->setParameter('sizes', $sizes, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
+            ->setParameter('brands', $brands, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
+            ->setParameter('priceFrom', $priceFrom)
+            ->setParameter('priceTo', $priceTo)
+            ->groupBy('p.model')
+            ->getQuery()
+            ->getResult()
+            ;
+         
+        if (isset($qb)) {
           
-            $data = $this->addPathToImages($products, 'Dresses');
+            $data = $this->addPathToImages($qb, 'Dresses');
             
             $paginated = $this->paginator->paginate($data, $page, 16);
             return $paginated;
@@ -208,7 +210,7 @@ class ProductRepository extends ServiceEntityRepository
     {
         foreach($products as &$product) {
             $images = $this->fileHandler->
-                getImagesWithPaths(json_decode($product['images']), null, 
+                getImagesWithPaths($product['images'], null, 
                                     preg_replace('/\s+/', '_', 
                                     $product['catName'])
                                 );

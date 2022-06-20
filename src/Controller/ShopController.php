@@ -83,64 +83,50 @@ class ShopController extends AbstractController
         ]);
     }
 
-
-    #[Route('/items-category/{category}', name: "items_category")]
-    public function itemsCategory($category = 'default')
-    {
-       $brands = $this->doctrine->getRepository(Brand::class)->findAll();
-       $sizes = $this->doctrine->getRepository(Size::class)->findAll();
-        $products = $this->doctrine->getRepository(Product::class)->
-                getSpecificProductsPaginated(
-                    page: 1, 
-                    category: 'Dresses', 
-                    sizes: [2,3],
-                    brands: ['Madextreme'],
-                    priceFrom: 10,
-                    priceTo: 30
-                );
-            
-        return $this->render('shop/items-category.html.twig', [
-            'products' => $products,
-            'brands' => $brands,
-            'sizes' => $sizes
-           ]);
-    }
-    #[Route('/items-filter/{sizes}/{brands}/{priceFrom}/{priceTo}', 
+    #[Route('/items-filter/{sizes}/{brands}/{priceFrom}/{priceTo}/{category}', 
             name: "items_filter",
+            options: ['expose' => true],
             defaults: [
-                'sizes' => '',
-                'brands' => '',
+                'sizes' => 'noSizes',
+                'brands' => 'noBrands',
+                'priceFrom' => 0,
+                'priceTo' => 99999,
+                'category' => 'allCats'
             ],
-            options: ['expose' => 'true'])]
-    public function itemsFilter($sizes = '',
-                                $brands = '',
-                                $priceFrom = 0,
-                                $priceTo = 999999)
+           )]
+          
+    public function itemsFilter($sizes,
+                                $brands,
+                                $priceFrom,
+                                $priceTo,
+                                $category, Request $request)
     {
-    
-       $brand = $this->doctrine->getRepository(Brand::class)->findAll();
-       $size = $this->doctrine->getRepository(Size::class)->findAll();
-       if ($sizes === '') {
-        foreach ($size as $item) {
-            $sizes .= $item->getSize();
-            $sizes .= ',';
-        }
-       }
+       // dump($request->query->get('sizes'));
+
+       $allBrands = $this->doctrine->getRepository(Brand::class)->findAllBrands();
+      
        
+       $allSizes = $this->doctrine->getRepository(Size::class)->getChoices();
+       $allCats = $this->doctrine->getRepository(Category::class)->findAllTheLeafNodes();
+       $allCategories = [];
+       foreach($allCats as $name) {
+        $allCategories[] = $name['name'];
+    }
+   
         $products = $this->doctrine->getRepository(Product::class)->
                 getSpecificProductsPaginated(
                     page: 1, 
-                    category: 'Dresses', 
-                    sizes: $sizes === '' ? $size : $sizes,
-                    brands: $brands,
+                    category: $allCategories, 
+                    sizes: $sizes === 'noSizes' ? $allSizes : explode(',', $sizes),
+                    brands: $brands === 'noBrands' ? $allBrands : explode(",", $brands),
                     priceFrom: $priceFrom,
                     priceTo: $priceTo
                 );
          
         return $this->render('shop/items-category.html.twig', [
             'products' => $products,
-            'brands' => $brand,
-            'sizes' => $size
+            'brands' => $allBrands,
+            'sizes' => $allSizes
            ]);
     }
 

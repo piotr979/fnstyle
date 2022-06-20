@@ -62,6 +62,20 @@ class BrandRepository extends ServiceEntityRepository
             return null;
         }
     }
+    
+    public function findAllBrands()
+    {
+        $qb = $this->createQueryBuilder('b')
+        ->select('b.name')
+        ->getQuery()
+        ->getArrayResult()
+        ;
+        $arr = [];
+        foreach($qb as $name) {
+            $arr[$name['name']] = $name['name'];
+        }
+        return $arr;
+    }
     // /**
     //  * @return Brand[] Returns an array of Brand objects
     //  */

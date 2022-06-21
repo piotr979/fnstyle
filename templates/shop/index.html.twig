@@ -32,20 +32,20 @@
 			<div class="col d-flex justify-content-center">
 				<div class="image-with-button mt-4">
 					<img src="{{ asset('assets/images/img-with-btn/kids_group.png') }}">
-					<a class="image-with-button__link btn-kids" href="#">Kids</a>
+					<a class="image-with-button__link btn-kids" href="{{ path('items_filter', { 'category': 'T-shirts' }) }}">Kids</a>
 				</div>
 			</div>
 
 			<div class="col d-flex justify-content-center">
 				<div class="image-with-button mt-4">
 					<img src="{{ asset('assets/images/img-with-btn/330x500 khaled-ghareeb-n84s3jgzhKk-unsplash1.png') }}">
-					<a class="image-with-button__link btn-womens" href="#">Womens</a>
+					<a class="image-with-button__link btn-womens" href="{{ path('items_filter', { 'category': 'Dresses' }) }}">Womens</a>
 				</div>
 			</div>
 			<div class="col d-flex justify-content-center">
 				<div class="image-with-button mt-4">
 					<img src="{{ asset('assets/images/img-with-btn/330x500 lethicia-matos-CSh-hNHc3Y8-unsplash-1.png') }}">
-					<a class="image-with-button__link btn-mens" href="#">Mens</a>
+					<a class="image-with-button__link btn-mens" href="{{ path('items_filter', { 'category': 'Winter coats' }) }}">Mens</a>
 				</div>
 			</div>
 		</div>
@@ -66,7 +66,7 @@
 				<div class="thumbnail-with-button mt-4">
 					<img src="{{ asset('assets/images/extras/atikh-bana-_KaMTEmJnxY-unsplash.png') }}">
 						<h2 class="thumbnail-heading slide-text__subhead">Accessories</h2>
-					<a class="thumbnail-with-button__link btn-kids" href="{{ path('item-single', { id: 1}) }}">See collection</a>
+					<a class="thumbnail-with-button__link btn-kids" href="{{ path('items_filter', { 'category': 'Accessories' }) }}">See collection</a>
 				</div>
 			</div>
 
@@ -74,7 +74,7 @@
 				<div class="thumbnail-with-button mt-4">
 					<img src="{{ asset('assets/images/extras/tamara-bellis-68csPWTnafo-unsplash.png') }}">
 						<h2 class="thumbnail-heading slide-text__subhead">Summer Vibes</h2>
-					<a class="thumbnail-with-button__link btn-womens" href="{{ path('items_category', { category: "default" }) }}">See collection</a>
+					<a class="thumbnail-with-button__link btn-womens" href="{{ path('items_filter', { 'category': 'Skin care' }) }}">See collection</a>
 				</div>
 			</div>
 		</div>

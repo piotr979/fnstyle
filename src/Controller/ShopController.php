@@ -4,22 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Product;
-use App\Form\BasicForm;
-use App\Entity\User;
 use App\Entity\Stock;
 use App\Entity\Brand;
 use App\Entity\Size;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Form\RegistrationFormType;
 use App\Service\FileHandler;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ShopController extends AbstractController
@@ -34,11 +28,12 @@ class ShopController extends AbstractController
         $this->fileHandler = $fileHandler;
     }
     #[Route('/', name: 'home')]
-    public function index(FileHandler $fileHandler, SessionInterface $session): Response
+    public function index(FileHandler $fileHandler, SessionInterface $session, Request $request): Response
     {
-        $session->set('name', 'icek');
+      
         $products = $this->doctrine->getRepository(Product::class)->getProducts('Dresses', 4);
         $products = $this->addPathToImages($products, 'Dresses');
+        
         return $this->render('shop/index.html.twig', [
             'products' => $products
         ]);
@@ -67,8 +62,7 @@ class ShopController extends AbstractController
         if (empty($stocks)) {
             $stock = new Stock();
             $stock->setQty(0);
-            $stocks[]
-             = $stock;
+            $stocks[] = $stock;
     }
     
     // Product is array with repeated name,brand,etc
@@ -83,7 +77,7 @@ class ShopController extends AbstractController
         ]);
     }
 
-    #[Route('/items-filter/{sizes}/{brands}/{priceFrom}/{priceTo}/{category}', 
+    #[Route('/items-filter/{sizes}/{brands}/{priceFrom}/{priceTo}/{category}/{searchText}/{sortBy}', 
             name: "items_filter",
             options: ['expose' => true],
             defaults: [
@@ -91,7 +85,9 @@ class ShopController extends AbstractController
                 'brands' => 'noBrands',
                 'priceFrom' => 0,
                 'priceTo' => 99999,
-                'category' => 'allCats'
+                'category' => 'allCats',
+                'searchText' => 'none',
+                'sortBy' => 'noSort'
             ],
            )]
           
@@ -99,34 +95,43 @@ class ShopController extends AbstractController
                                 $brands,
                                 $priceFrom,
                                 $priceTo,
-                                $category, Request $request)
+                                $category, 
+                                $searchText,
+                                $sortBy,
+                                Request $request)
     {
-       // dump($request->query->get('sizes'));
 
+       // dump($request->query->get('sizes'));
        $allBrands = $this->doctrine->getRepository(Brand::class)->findAllBrands();
-      
-       
        $allSizes = $this->doctrine->getRepository(Size::class)->getChoices();
        $allCats = $this->doctrine->getRepository(Category::class)->findAllTheLeafNodes();
        $allCategories = [];
-       foreach($allCats as $name) {
-        $allCategories[] = $name['name'];
+       if ($category === 'allCats') {
+        foreach($allCats as $name) {
+            $allCategories[] = $name['name'];
+       }
     }
-   
         $products = $this->doctrine->getRepository(Product::class)->
                 getSpecificProductsPaginated(
                     page: 1, 
-                    category: $allCategories, 
+                    category: $category === 'allCats' ? $allCategories : explode(',', $category), 
                     sizes: $sizes === 'noSizes' ? $allSizes : explode(',', $sizes),
                     brands: $brands === 'noBrands' ? $allBrands : explode(",", $brands),
                     priceFrom: $priceFrom,
-                    priceTo: $priceTo
+                    priceTo: $priceTo,
+                    searchText: $searchText,
+                    sortBy: $sortBy
                 );
-         
+   
         return $this->render('shop/items-category.html.twig', [
             'products' => $products,
             'brands' => $allBrands,
-            'sizes' => $allSizes
+            'sizes' => $allSizes,
+            'sizesChecked' => explode(',', $sizes),
+            'brandsChecked' => explode(',', $brands),
+            'priceFromInput' => $priceFrom,
+            'priceToInput' => $priceTo,
+            'searchText' => $searchText
            ]);
     }
 
@@ -171,5 +176,4 @@ class ShopController extends AbstractController
         }
         return $products;
     }
-  
 }

@@ -37,10 +37,16 @@
 					</div>
 
 					<div class="top-middle col-12 col-md-6 d-flex order-2 order-md-1">
-						<div class="top-search">
+						
+							<form id="top-search-form">
+					<div class="top-search">
 							<i class="bi-search top-search__icon"></i>
-							<input class="top-search__input" type="search" placeholder="Search...">
-						</div>
+						
+							<input id="search-string"
+							class="top-search__input" type="search" placeholder="Search shop">
+						
+</div>
+		</form>				
 					</div>
 
 					<div class="col-4 top-extras col-md-2 order-1 order-md-2">
@@ -67,7 +73,8 @@
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 							<li class="nav-item">
-								<a class="nav-link active" aria-current="page" href="#">New in</a>
+								<a class="nav-link active" aria-current="page"
+									href="{{ path('items_filter', {sortBy: 'date'}) }} ">New in</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="#">Specials</a>

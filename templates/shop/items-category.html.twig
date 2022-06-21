@@ -1,62 +1,59 @@
 {% extends 'base.html.twig' %}
 {% block body %}
+
 	<section class="container">
-    <div class="row gx-5">
-    <div class="col-2">
-        <h3 class="mt-4">Filters</h3>
-        <p class="fw-bold">Size</p>
-       {% for key,value in sizes %}
-        <label class="d-block">
-        <input 
-        class="me-2 mb-2 size-input" type="checkbox" name="size[]"
-         value="{{ value }}">{{ value }}</label>
-       {% endfor %}
-        
-    <hr />
+		<div class="row gx-5">
+			<div class="col-2">
+				<h3 class="mt-4">Filters</h3>
+				<p class="fw-bold">Size</p>
+				{% for key,value in sizes %}
+					<label class="d-block">
+						<input class="me-2 mb-2 size-input" type="checkbox" name="size[]" {% if value in sizesChecked %} checked="checked" {% endif %} value="{{ value }}">{{ value }}</label>
 
-      <p class="fw-bold">Brands</p>
+				{% endfor %}
+				<hr/>
+				<p class="fw-bold">Brands</p>
 
-       {% for key,value in brands %}
-        <label class="d-block">
-        <input class="me-2 mb-2 brands" 
-            type="checkbox" name="brand" 
-            value="{{ value }}">{{ value }}
-        </label>
-       {% endfor %}
+				{% for key,value in brands %}
+					<label class="d-block">
+						<input class="me-2 mb-2 brands" type="checkbox" name="brand" {% if value in brandsChecked %} checked="checked" {% endif %} value="{{ value }}">{{ value }}
+					</label>
+				{% endfor %}
 
-        <hr />
+				<hr/>
+				<p class="fw-bold">Price</p>
 
-    <p class="fw-bold">Price</p>
- 
-    <div class="d-flex price-range">
-    
-    <input id="price-from" type="number" min="1" max="10000" placeholder="From" >
-    <input id="price-to" inputmode="numeric" class="ms-3" type="number" min="1" max="10000" placeholder="To">
-    </div>
-       <small id="price-note" class="text-danger"></small>
-    <div class="row justify-content-center">
-    <button id="apply-filters" class="btn-action mt-4 fw-bold">Apply</button>
-    </div>
-    </div>
-    <div class="col-10">
-        	<div class="row mt-5">
-            {% for product in products %}
-			{% include 'components/item-mini.html.twig' with {
+				<div class="d-flex price-range">
+					<input id="price-from" type="number" min="1" max="10000" placeholder="From" value="{{ priceFromInput == '0' ? '' : priceFromInput }}">
+					<input id="price-to" inputmode="numeric" class="ms-3" type="number" min="1" max="10000" value="{{ priceToInput == '99999' ? '' : priceToInput }}" placeholder="To">
+				</div>
+				<small id="price-note" class="text-danger"></small>
+				<div class="row justify-content-center">
+					<button id="apply-filters" class="btn-action mt-4 fw-bold">Apply</button>
+				</div>
+			</div>
+			<div class="col-10">
+				<div class="row mt-5">
+               
+                    {% if products|length == 0 %}
+                    <p>Products not found</p>
+                    {% endif %}
+                
+
+					{% for product in products %}
+						{% include 'components/item-mini.html.twig' with {
                 'products' : product } %}
-            {% endfor %}
-		
+					{% endfor %}
+
+				</div>
+			</div>
 		</div>
-    </div>
-    </div>
-    </section>
-
-	{% endblock %}
-
-{% block javascripts %}
- {{ parent() }}
-
-
-
-    {{ encore_entry_script_tags('filtering') }}
+	</section>
 
 {% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('filtering') }}
+{% endblock %}
+

@@ -33,7 +33,6 @@ class AdminController extends AbstractController
     }
 
     // ***** PRODUCTS ********** //
-
     // Redirect to catalog
     #[Route('/', name: 'admin')]
     public function admin()
@@ -71,9 +70,7 @@ class AdminController extends AbstractController
         if ($productForm->isSubmitted() && $productForm->isValid()) {
             $data = $productForm->getData();
             $images = $fileHandler->uploadImages($data->getImages(), $data->getCategory());
-            
             $product->setImages($images);
-
             $em = $doctrine->getManager();
             $em->persist($product);
             $em->flush();
@@ -86,11 +83,6 @@ class AdminController extends AbstractController
         return $this->render('admin/add-product.html.twig', [
             'productForm' => $productForm->createView()
         ]);
-    }
-    #[Route('/dropzone', name: 'dropzone')]
-    public function dropzone()
-    {
-        return $this->render('admin/dropzone.html.twig');
     }
     #[Route('/edit-product/{id}', name: 'edit-product')]
     public function editItem($id, FileHandler $fileHandler, Request $request): Response
@@ -154,7 +146,6 @@ public function stock(int $page, string $category, string $sorting): Response
  #[Route('/edit-stock/{productId}', name: 'edit_stock')]
  public function editStock($productId, Request $request): Response
  {
-    // find by product
     $productStocks = $this->doctrine->getRepository(Stock::class)->findBy(['product' => $productId]);
     $product = $this->doctrine->getRepository(Product::class)->find($productId);
     if (count($productStocks) > 0 ) {
@@ -162,10 +153,8 @@ public function stock(int $page, string $category, string $sorting): Response
         $product->addStock($entry);
     }
 }
-    
     $stockForm = $this->createForm(StockCollectionType::class, $product);
-   
-     $stockForm->handleRequest($request);
+    $stockForm->handleRequest($request);
 
      if ($stockForm->isSubmitted() && $stockForm->isValid()) {
          $data = $stockForm->getData();
@@ -182,16 +171,14 @@ public function stock(int $page, string $category, string $sorting): Response
             }
          
      }
-  
      return $this->render('admin/edit-stock.html.twig', [
         'stockForm' => $stockForm->createView()
      ]);
 }
-
     #[Route('/sales', name: 'sales')]
     public function sales()
     {
-        return new Response('Sales page');
+        return $this->render('admin/sales.html.twig');
     }
      // ***** CUSTOMERS  ********** //
 

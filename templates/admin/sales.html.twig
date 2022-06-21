@@ -1,0 +1,54 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+
+	<section class="container">
+		<div class="row ms-3 ms-sm-2 ms-md-0">
+			<div class="col ps-0">
+			
+				{% include('admin/components/display-flashes.html.twig') %}
+
+				<h2 class="fw-bold">Sales</h2>
+			</div>
+		</div>
+
+		{# STATS GO HERE #}
+		{% include 'admin/components/stats.html.twig' with {
+			'sold_items': '1999',
+			'sold_total': '154.234,23',
+			'customers': '432'
+		}  %}
+		{# ENDS STATS #}
+
+		<div class="row mt-4 mb-2">
+			<div class="col">
+				<div class="top-search">
+					<i class="bi-search top-search__icon"></i>
+					<input class="top-search__input" type="search" placeholder="Search...">
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col">
+            
+				<table class="table">
+
+					<thead>
+						<tr>
+							<th scope="col" class="d-none d-sm-table-cell">#</th>
+							<th scope="col">Brand</th>
+							<th scope="col">Model</th>
+							<th scope="col" class="d-none d-sm-table-cell">Sales qty</th>
+							<th scope="col" class="d-none d-sm-table-cell">Category</th>
+							<th scope="col" class="d-none d-sm-table-cell">Actions</th>
+							<th scope="col" class="d-sm-none">Act</th>
+						</tr>
+					</thead>
+
+					<tbody>
+					    
+					</tbody>
+	</table>
+	
+</div></div></section>{% endblock %}

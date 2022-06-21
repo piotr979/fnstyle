@@ -11,8 +11,7 @@ import './styles/app.scss';
 import './js/chapter-navigator';
 import './js/shopping-cart-manager';
 import './js/custom';
-
-
+import './js/search-form';
 
 /* import './js/jquery.min.js';
 import './js/jquery.uploadifive.min.js';

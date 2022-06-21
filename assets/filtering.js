@@ -46,7 +46,7 @@ Routing.setRoutingData(routes);
         'brands': brandList.length > 0 ? brandList.toString() : 'noBrands',
         'priceFrom': priceFromInput.value != '' ? priceFromInput.value : '0',
         'priceTo': priceToInput.value != '' ? priceToInput.value : '99999',
-        'category': 'noCat'});
+        'category': 'allCats'});
     
      
 

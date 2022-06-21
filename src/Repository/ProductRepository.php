@@ -83,12 +83,18 @@ class ProductRepository extends ServiceEntityRepository
             array $sizes,
             array $brands,
             int $priceFrom,
-            int $priceTo) 
+            int $priceTo,
+            string $searchText,
+            string $sortBy
+            ) 
     {
+   
         $conn = $this->getEntityManager()->getConnection();
 
-            $qb = $this->createQueryBuilder('p')
-            ->select("p.id, p.price, stock.qty, p.images, category.name,
+            $qb = $this->createQueryBuilder('p');
+
+            $qb->select("p.id, p.price, stock.qty, p.images,
+            p.date, category.name,
             p.model, s.size AS size, c.name AS color,
             b.name AS brand, category.name AS catName")
             ->innerJoin('p.stocks', 'stock')
@@ -96,8 +102,14 @@ class ProductRepository extends ServiceEntityRepository
             ->innerJoin('stock.size','s')
             ->innerJoin('stock.color', 'c')
             ->innerJoin('p.category', 'category')
-            ->where('category.name IN ( :category) ')
-            ->andWhere('s.size IN (:sizes)')
+            ->where('category.name IN ( :category) ');
+
+            if ($searchText != 'none') {
+             
+                $qb->andWhere('p.model LIKE :words')
+                ->setParameter('words', '%' . $searchText .'%' );
+            }
+            $qb->andWhere('s.size IN (:sizes)')
             ->andWhere('b.name IN (:brands)')
             ->andWhere('p.price > :priceFrom')
             ->andWhere('p.price < :priceTo')
@@ -107,13 +119,14 @@ class ProductRepository extends ServiceEntityRepository
             ->setParameter('priceFrom', $priceFrom)
             ->setParameter('priceTo', $priceTo)
             ->groupBy('p.model')
-            ->getQuery()
-            ->getResult()
-            ;
-         
-        if (isset($qb)) {
+            ->orderBy('p.date', 'DESC')
+           ;
+           
+            $result = $qb->getQuery()->execute();
+       
+        if (isset($result)) {
           
-            $data = $this->addPathToImages($qb, 'Dresses');
+            $data = $this->addPathToImages($result, 'Dresses');
             
             $paginated = $this->paginator->paginate($data, $page, 16);
             return $paginated;

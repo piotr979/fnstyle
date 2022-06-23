@@ -20,7 +20,6 @@ class SearchController extends AbstractController
       
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
             dump($searchForm->getData());
-           
         }
         return $this->render('components/search-input.html.twig', [
             'searchForm' => $searchForm->createView()

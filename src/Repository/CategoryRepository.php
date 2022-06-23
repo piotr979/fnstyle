@@ -16,6 +16,11 @@ use Knp\Component\Pager\PaginatorInterface;
  * @method Category[]    findAll()
  * @method Category[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
+
+ /* categories are based on adjacency 
+ /* http://download.nust.na/pub6/mysql/tech-resources/articles/hierarchical-data.html
+*/
+
 class CategoryRepository extends ServiceEntityRepository
 {
     private $conn;
@@ -66,7 +71,7 @@ class CategoryRepository extends ServiceEntityRepository
             return null;
         }
     }
-
+    
     public function findAllPaginated(int $page)
     {
     $sql = '
@@ -119,6 +124,32 @@ class CategoryRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
             return $qb;
+    }
+    public function findImmediateChildren($category)
+    {
+
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        $qb->select('node.name')
+        ->from('App\Entity\Category', 'node')
+        ->from('App\Entity\Category', 'parent')
+        ->where('node.lft > parent.lft AND node.rgt < parent.rgt AND parent.name = :itemName')
+        ->setParameter('itemName', $category)
+        ->orderBy('parent.lft')
+        ;
+        $query = $qb->getQuery()->getResult();
+        $cats = [];
+        foreach($query as $name) {
+            $cats[] = $name['name'];
+        }
+        if (empty($cats)) {
+            // if empty means no categories are children ones
+            // return parent
+            return $category;
+        }
+       return implode(',',$cats);
+    
+
     }
     public function findAllWithParents()
     {

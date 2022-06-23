@@ -47,7 +47,15 @@
 
 				</div>
 			</div>
+            {# #### PAGINATION CONTROLS STARTS HERE ### #}
+				{% if products is not null %}
+					<div class="d-flex justify-content-center mt-0 my-3 mt-md-5">
+						{{ knp_pagination_render(products) }}
+					</div>
+				{% endif %}
+				{# #####  PAGINATION CONTROLS ENDS HERE ##### #}
 		</div>
+        	
 	</section>
 
 {% endblock %}

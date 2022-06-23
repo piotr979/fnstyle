@@ -66,6 +66,7 @@ class ProductRepository extends ServiceEntityRepository
         ->getQuery()
         ->getResult()
         ;
+       
         if (isset($qb)) {
             $paginated = $this->paginator->paginate($qb, $page, 10);
             return $paginated;
@@ -73,11 +74,76 @@ class ProductRepository extends ServiceEntityRepository
             return null;
         }
     }
+  
+     /**
+     * This is most versatile function for filtering products
+     */
+    public function getSpecificProductsPaginated(
+        int $page,
+        array $category,
+        array $sizes,
+        array $brands,
+        int $priceFrom,
+        int $priceTo,
+        string $searchText,
+        string $sortBy
+        ) 
+{
+
+    $conn = $this->getEntityManager()->getConnection();
+
+        $qb = $this->createQueryBuilder('p');
+
+        $qb->select("p.id, p.price, stock.qty, p.images,
+        p.date,
+        p.model, s.size AS size, c.name AS color,
+        b.name AS brand, category.name AS catName ")
+        ->leftJoin('p.stocks', 'stock')
+        ->leftJoin('p.brand', 'b')
+        ->leftJoin('stock.size','s')
+        ->leftJoin('stock.color', 'c')
+        ->leftJoin('p.category', 'category')
+        ->where('category.name IN ( :category) ');
+        if ($searchText != 'none') {
+             
+            $qb->andWhere('p.model LIKE :words')
+            ->setParameter('words', '%' . $searchText .'%' );
+        }
+
+        $qb->andWhere('p.price > :priceFrom')
+        ->andWhere('s.size IN (:sizes)')
+        ->andWhere('p.price < :priceTo')
+        ->andWhere('b.name IN (:brands)')
+        ->setParameter('priceFrom', $priceFrom)
+        ->setParameter('priceTo', $priceTo)
+        ->setParameter('sizes', $sizes, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
+        ->setParameter('category', $category, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
+        ->setParameter('brands', $brands, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
+        ->groupBy('p.model');
+
+      
+    
+        if ($sortBy = 'latest') {
+            $qb->orderBy('p.date', 'DESC')
+            ;
+        }
+        $result = $qb->getQuery()->execute();
+      
+    if (isset($result)) {
+      
+        $data = $this->addPathToImages($result, 'Dresses');
+        
+        $paginated = $this->paginator->paginate($data, $page, 16);
+        return $paginated;
+    } else {
+        return null;
+    }
+}
 
     /**
      * This is most versatile function for filtering products
      */
-    public function getSpecificProductsPaginated(
+    public function getSpecificProductsPaginated2(
             int $page,
             array $category,
             array $sizes,
@@ -97,11 +163,11 @@ class ProductRepository extends ServiceEntityRepository
             p.date, category.name,
             p.model, s.size AS size, c.name AS color,
             b.name AS brand, category.name AS catName")
-            ->innerJoin('p.stocks', 'stock')
-            ->innerJoin('p.brand', 'b')
-            ->innerJoin('stock.size','s')
-            ->innerJoin('stock.color', 'c')
-            ->innerJoin('p.category', 'category')
+            ->leftJoin('p.stocks', 'stock')
+            ->leftJoin('p.brand', 'b')
+            ->leftJoin('stock.size','s')
+            ->leftJoin('stock.color', 'c')
+            ->leftJoin('p.category', 'category')
             ->where('category.name IN ( :category) ');
 
             if ($searchText != 'none') {
@@ -119,11 +185,16 @@ class ProductRepository extends ServiceEntityRepository
             ->setParameter('priceFrom', $priceFrom)
             ->setParameter('priceTo', $priceTo)
             ->groupBy('p.model')
-            ->orderBy('p.date', 'DESC')
-           ;
+            ;
+
+            if ($sortBy = 'latest') {
+                $qb->orderBy('p.date', 'DESC')
+                ;
+            }
+           
            
             $result = $qb->getQuery()->execute();
-       
+     
         if (isset($result)) {
           
             $data = $this->addPathToImages($result, 'Dresses');

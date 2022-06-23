@@ -71,7 +71,7 @@ class SizeRepository extends ServiceEntityRepository
             ;
             $arr = [];
             foreach($qb as $name) {
-                $arr[$name['size']] = $name['size'];
+                $arr[] = $name['size'];
             }
             return $arr;
     }

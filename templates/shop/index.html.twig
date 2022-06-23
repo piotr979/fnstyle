@@ -9,7 +9,7 @@
 			<div class="slide-text">
 				<h4 class="slide-text__subhead animate__animated animate__slideInUp">New season</h4>
 				<h2 class="slide-text__head animate__animated animate__slideInUp">New arrivals</h2>
-				<a href="{{ path('latest_products') }}" class="btn btn-slider mt-2">See latest</a>
+				<a href="{{ path('items_filter', {sortBy: 'latest'}) }} " class="btn btn-slider mt-2">See latest</a>
 			</div>
 			<div class="slide-overlay">
 				<img class="slide__image" src="{{ asset('assets/images/slider/tamara-bellis-WdPfMcpeQas-unsplash 1920x728.jpg') }}" alt=" ">
@@ -32,7 +32,7 @@
 			<div class="col d-flex justify-content-center">
 				<div class="image-with-button mt-4">
 					<img src="{{ asset('assets/images/img-with-btn/kids_group.png') }}">
-					<a class="image-with-button__link btn-kids" href="{{ path('items_filter', { 'category': 'T-shirts' }) }}">Kids</a>
+					<a class="image-with-button__link btn-kids" href="{{ path('products_parent_category', { category: 'Kids'}) }}">Kids</a>
 				</div>
 			</div>
 

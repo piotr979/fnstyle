@@ -47,7 +47,10 @@ class CategoryFixture extends Fixture
         'Personal Care' => [52,59, false],
         'Skin care' => [53,54],
         'Hair care' => [55,56],
-        'Body care' => [57,58]
+        'Body care' => [57,58],
+        'Kids' => [60,65, false],
+        'Shirts' => [61,62],
+        'Kids pants' => [63,64]
     ];
       foreach($categories as $category => $values)
       {

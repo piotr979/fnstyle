@@ -134,7 +134,16 @@ class ShopController extends AbstractController
             'searchText' => $searchText
            ]);
     }
-
+    #[Route('products-parent-category/{category}', name: 'products_parent_category')]
+    public function productsParentCategory($category)
+    {
+        $categories = $this->doctrine->getRepository(Category::class)->findImmediateChildren($category);
+    
+        return $this->redirectToRoute('items_filter', [
+         'category' => $categories
+        ]
+    );
+    }
     #[Route('checkout', name: 'checkout')]
     public function checkout(Request $request, SessionInterface $session)
     {

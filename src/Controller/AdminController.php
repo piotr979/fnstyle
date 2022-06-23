@@ -33,7 +33,7 @@ class AdminController extends AbstractController
     }
 
     // ***** PRODUCTS ********** //
-    // Redirect to catalog
+    // Redirects to catalog template
     #[Route('/', name: 'admin')]
     public function admin()
     {
@@ -63,7 +63,6 @@ class AdminController extends AbstractController
     {
         
         $product = new Product();
-     
         $productForm = $this->createForm(ProductType::class, $product);
         $productForm->handleRequest($request);
 
@@ -84,6 +83,7 @@ class AdminController extends AbstractController
             'productForm' => $productForm->createView()
         ]);
     }
+
     #[Route('/edit-product/{id}', name: 'edit-product')]
     public function editItem($id, FileHandler $fileHandler, Request $request): Response
     {
@@ -95,7 +95,6 @@ class AdminController extends AbstractController
             $images = [];
         }
         $productForm = $this->createForm(ProductType::class, $product);
-
         $productForm->handleRequest($request);
         if ($productForm->isSubmitted() && $productForm->isValid()) {
            
@@ -103,6 +102,7 @@ class AdminController extends AbstractController
             $em = $this->doctrine->getManager();
 
             /* Processing image list */
+            /* Combines existing image list with added ones */
             if ($data->getImages()) {
               
                 $images = $fileHandler->uploadImages($data->getImages(), $data->getCategory());
@@ -127,6 +127,7 @@ class AdminController extends AbstractController
             'imagesForPreview' => $images
         ]);
     }
+
     // ****** STOCK ************** //
     #[Route('/stock/{page}/{category}/{sorting}', name: 'stock',
     defaults: ['sorting' => 'name_desc', 'page' => 1, 'category' => 'all'])]
@@ -155,7 +156,6 @@ public function stock(int $page, string $category, string $sorting): Response
 }
     $stockForm = $this->createForm(StockCollectionType::class, $product);
     $stockForm->handleRequest($request);
-
      if ($stockForm->isSubmitted() && $stockForm->isValid()) {
          $data = $stockForm->getData();
          $stocks = $data->getStocks();
@@ -202,7 +202,6 @@ public function stock(int $page, string $category, string $sorting): Response
     public function editCustomer($id, Request $request): Response
     {
         $user = $this->doctrine->getRepository(User::class)->find($id);
-
         $profileForm = $this->createForm(CustomerProfileType::class, $user);
         $profileForm->handleRequest($request);
 
@@ -304,9 +303,14 @@ public function stock(int $page, string $category, string $sorting): Response
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->doctrine->getManager();
 
-            /* It's kind of generic "getName" call, common for Brand,Color,Size */
+            if ($class = 'Size') {
+                $size = $form->getData()->getSize();
+                $item->setSize($size);
+            } else {
             $name = $form->getData()->getName();
             $item->setName($name);
+            }
+          
             $em->persist($item);
             $em->flush();
             $this->addFlash(

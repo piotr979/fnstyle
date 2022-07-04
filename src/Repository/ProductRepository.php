@@ -131,6 +131,9 @@ class ProductRepository extends ServiceEntityRepository
       
     if (isset($result)) {
       
+        // rebuilt data with updated paths for images
+        // "Dresses" doesn't matter as category name will be
+        // taken from DB
         $data = $this->addPathToImages($result, 'Dresses');
         
         $paginated = $this->paginator->paginate($data, $page, 16);
@@ -139,72 +142,6 @@ class ProductRepository extends ServiceEntityRepository
         return null;
     }
 }
-
-    /**
-     * This is most versatile function for filtering products
-     */
-    public function getSpecificProductsPaginated2(
-            int $page,
-            array $category,
-            array $sizes,
-            array $brands,
-            int $priceFrom,
-            int $priceTo,
-            string $searchText,
-            string $sortBy
-            ) 
-    {
-   
-        $conn = $this->getEntityManager()->getConnection();
-
-            $qb = $this->createQueryBuilder('p');
-
-            $qb->select("p.id, p.price, stock.qty, p.images,
-            p.date, category.name,
-            p.model, s.size AS size, c.name AS color,
-            b.name AS brand, category.name AS catName")
-            ->leftJoin('p.stocks', 'stock')
-            ->leftJoin('p.brand', 'b')
-            ->leftJoin('stock.size','s')
-            ->leftJoin('stock.color', 'c')
-            ->leftJoin('p.category', 'category')
-            ->where('category.name IN ( :category) ');
-
-            if ($searchText != 'none') {
-             
-                $qb->andWhere('p.model LIKE :words')
-                ->setParameter('words', '%' . $searchText .'%' );
-            }
-            $qb->andWhere('s.size IN (:sizes)')
-            ->andWhere('b.name IN (:brands)')
-            ->andWhere('p.price > :priceFrom')
-            ->andWhere('p.price < :priceTo')
-            ->setParameter('category', $category, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
-            ->setParameter('sizes', $sizes, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
-            ->setParameter('brands', $brands, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
-            ->setParameter('priceFrom', $priceFrom)
-            ->setParameter('priceTo', $priceTo)
-            ->groupBy('p.model')
-            ;
-
-            if ($sortBy = 'latest') {
-                $qb->orderBy('p.date', 'DESC')
-                ;
-            }
-           
-           
-            $result = $qb->getQuery()->execute();
-     
-        if (isset($result)) {
-          
-            $data = $this->addPathToImages($result, 'Dresses');
-            
-            $paginated = $this->paginator->paginate($data, $page, 16);
-            return $paginated;
-        } else {
-            return null;
-        }
-    }
     public function getProducts(string $category, int $amount)
     {
 

@@ -24,7 +24,8 @@ class FileHandler
         /* *** Uploads images from the product form. *** */
         /* path for the folder is combination of uploads folder with category name */
         
-       $uploadDir =  $this->products_images_dir . '/' . $category->getName() . '/';
+       $uploadDir =  $this->products_images_dir . '/' . 
+                preg_replace('/\s+/', '_', $category->getName()) . '/';
        $imagesUrlList = [];
        foreach($images as $image) {
             $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);

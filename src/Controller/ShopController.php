@@ -77,7 +77,7 @@ class ShopController extends AbstractController
         ]);
     }
 
-    #[Route('/items-filter/{sizes}/{brands}/{priceFrom}/{priceTo}/{category}/{searchText}/{sortBy}', 
+    #[Route('/items-filter/{sizes}/{brands}/{priceFrom}/{priceTo}/{category}/{searchText}/{sortBy}/{page}', 
             name: "items_filter",
             options: ['expose' => true],
             defaults: [
@@ -87,7 +87,8 @@ class ShopController extends AbstractController
                 'priceTo' => 99999,
                 'category' => 'allCats',
                 'searchText' => 'none',
-                'sortBy' => 'noSort'
+                'sortBy' => 'noSort',
+                'page' => 1
             ],
            )]
           
@@ -98,6 +99,7 @@ class ShopController extends AbstractController
                                 $category, 
                                 $searchText,
                                 $sortBy,
+                                $page,
                                 Request $request)
     {
 
@@ -113,7 +115,7 @@ class ShopController extends AbstractController
     }
         $products = $this->doctrine->getRepository(Product::class)->
                 getSpecificProductsPaginated(
-                    page: 1, 
+                    page: $page, 
                     category: $category === 'allCats' ? $allCategories : explode(',', $category), 
                     sizes: $sizes === 'noSizes' ? $allSizes : explode(',', $sizes),
                     brands: $brands === 'noBrands' ? $allBrands : explode(",", $brands),

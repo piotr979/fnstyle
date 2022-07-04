@@ -15,10 +15,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Form\ColorType;
 use App\Form\CustomerProfileType;
 use App\Form\ProductType;
-use App\Form\StockType;
 use App\Service\FileHandler;
 
 
@@ -33,6 +31,7 @@ class AdminController extends AbstractController
     }
 
     // ***** PRODUCTS ********** //
+
     // Redirects to catalog template
     #[Route('/', name: 'admin')]
     public function admin()
@@ -41,8 +40,12 @@ class AdminController extends AbstractController
     }
 
     // Displays main page (catalog)
-    #[Route('/catalog/{page}/{category}/{sorting}', name: 'catalog',
-        defaults: ['sorting' => 'name_desc', 'page' => 1, 'category' => 'all'])]
+    #[Route('/catalog/{page}/{category}/{sorting}', 
+                name: 'catalog',
+                defaults: ['sorting' => 'name_desc', 
+                            'page' => 1, 
+                            'category' => 'all']
+                )]
     public function index(int $page, string $category, string $sorting): Response
     {
         $repo = $this->doctrine->getRepository(Product::class);
@@ -59,7 +62,10 @@ class AdminController extends AbstractController
 
     // Adding new product (clothes, beauty, etc.)
     #[Route('/add-product', name: 'add_product')]
-    public function addProduct(Request $request, ManagerRegistry $doctrine, FileHandler $fileHandler)
+    public function addProduct(Request $request, 
+                    ManagerRegistry $doctrine, 
+                    FileHandler $fileHandler
+                    )
     {
         
         $product = new Product();
@@ -85,7 +91,10 @@ class AdminController extends AbstractController
     }
 
     #[Route('/edit-product/{id}', name: 'edit-product')]
-    public function editItem($id, FileHandler $fileHandler, Request $request): Response
+    public function editItem($id, 
+                            FileHandler $fileHandler, 
+                            Request $request
+                            ): Response
     {
         $product = $this->doctrine->getRepository(Product::class)->find($id);
         $sizes = $this->doctrine->getRepository(Size::class)->findAll();
@@ -104,13 +113,13 @@ class AdminController extends AbstractController
             /* Processing image list */
             /* Combines existing image list with added ones */
             if ($data->getImages()) {
-              
                 $images = $fileHandler->uploadImages($data->getImages(), $data->getCategory());
                 $imagesUploadedAndNewOnes = array_merge($images, $existingImages);
                 $product->setImages($imagesUploadedAndNewOnes);
             } else {
                 $product->setImages($existingImages);
             }
+
             $em->persist($product);
             $em->flush();
             $this->addFlash(
@@ -129,10 +138,13 @@ class AdminController extends AbstractController
     }
 
     // ****** STOCK ************** //
-    #[Route('/stock/{page}/{category}/{sorting}', name: 'stock',
-    defaults: ['sorting' => 'name_desc', 'page' => 1, 'category' => 'all'])]
-public function stock(int $page, string $category, string $sorting): Response
-{
+    #[Route('/stock/{page}/{category}/{sorting}', 
+                name: 'stock',
+                defaults: ['sorting' => 'name_desc',
+                            'page' => 1, 
+                            'category' => 'all'])]
+    public function stock(int $page, string $category, string $sorting): Response
+    {
     $repo = $this->doctrine->getRepository(Product::class);
     $products = $repo->findAllPaginated(
         $page,
@@ -143,17 +155,18 @@ public function stock(int $page, string $category, string $sorting): Response
         'products' => $products
     ]);
 }
- // Edit stock
- #[Route('/edit-stock/{productId}', name: 'edit_stock')]
- public function editStock($productId, Request $request): Response
- {
-    $productStocks = $this->doctrine->getRepository(Stock::class)->findBy(['product' => $productId]);
-    $product = $this->doctrine->getRepository(Product::class)->find($productId);
-    if (count($productStocks) > 0 ) {
-    foreach ($productStocks as $entry) {
-        $product->addStock($entry);
-    }
-}
+    // Edit stock
+    #[Route('/edit-stock/{productId}', name: 'edit_stock')]
+    public function editStock($productId, Request $request): Response
+    {
+        $productStocks = $this->doctrine->getRepository(Stock::class)->findBy(['product' => $productId]);
+        $product = $this->doctrine->getRepository(Product::class)->find($productId);
+        if (count($productStocks) > 0 ) {
+                foreach ($productStocks as $entry) {
+                $product->addStock($entry);
+            }
+        }
+
     $stockForm = $this->createForm(StockCollectionType::class, $product);
     $stockForm->handleRequest($request);
      if ($stockForm->isSubmitted() && $stockForm->isValid()) {
@@ -163,28 +176,35 @@ public function stock(int $page, string $category, string $sorting): Response
                 $em = $this->doctrine->getManager();
                 foreach ($stocks as $stock) {
                     $stock->setProduct($product);
-
                     $em->persist($stock);
                 }
+
                 $em->flush();
                 $this->addFlash('notice', 'Your stock has been modified.');
             }
          
      }
-     return $this->render('admin/edit-stock.html.twig', [
-        'stockForm' => $stockForm->createView()
-     ]);
-}
+        return $this->render('admin/edit-stock.html.twig', [
+            'stockForm' => $stockForm->createView()
+        ]);
+    }
+
     #[Route('/sales', name: 'sales')]
     public function sales()
     {
         return $this->render('admin/sales.html.twig');
     }
+
      // ***** CUSTOMERS  ********** //
 
     // List of all customers 
-    #[Route('/customers/{page}/{search}/{sorting}', name: 'customers',
-        defaults: ['sorting' => 'name_desc', 'page' => 1, 'search' => ''])]
+    #[Route('/customers/{page}/{search}/{sorting}', 
+                name: 'customers',
+                defaults: [
+                    'sorting' => 'name_desc', 
+                    'page' => 1, 
+                    'search' => '']
+                    )]
     public function getCustomers(int $page, string $search, string $sorting): Response
     {
         $customers = $this->doctrine->getRepository(User::class)->findAllPaginated(
@@ -192,6 +212,7 @@ public function stock(int $page, string $category, string $sorting): Response
             $search,
             $sorting
         );
+
         return $this->render('admin/customers.html.twig', [
             'customers' => $customers
         ]);
@@ -245,7 +266,9 @@ public function stock(int $page, string $category, string $sorting): Response
                 as it may be extended in future
                 */
                 switch ($class) {
-                    case 'Category': {
+                    case 'Category':
+                    case 'Brand':
+                    case 'Color': {
                         $item->setName($name);
                         break;
                     }
@@ -253,17 +276,9 @@ public function stock(int $page, string $category, string $sorting): Response
                         $item->setSize($name);
                         break;
                     }
-                    case 'Brand': {
-                        $item->setName($name);
-                        break;
-                    }
-                    case 'Color': {
-                        $item->setName($name);
-                        break;
-                    }
                 }
-              
                 $em->flush();
+
         return $this->redirectToRoute('settings', [
             'page' => 1,
             'class' => $class
@@ -277,10 +292,13 @@ public function stock(int $page, string $category, string $sorting): Response
         $category = new Category();
         $categoryForm = $this->createForm(CategoryFormType::class, $category);
         $categoryForm->handleRequest($request);
+
         if ($categoryForm->isSubmitted() && $categoryForm->isValid()) {
             /* need to insert between existing data */
             $data = $categoryForm->getData();
-           $this->doctrine->getRepository(Category::class)->addNewCategoryIntoExisting($data->getParentCategory(), $data->getName());
+            $this->doctrine->getRepository(Category::class)
+                        ->addNewCategoryIntoExisting($data->getParentCategory(), 
+                                                    $data->getName());
             $this->addFlash('notice','New category inserted.');
             return $this->redirectToRoute('settings');
         }
@@ -298,12 +316,14 @@ public function stock(int $page, string $category, string $sorting): Response
         }
         $itemObject = 'App\\Entity\\' . $class;
         $item = new $itemObject;
+       
         $form = $this->createForm( 'App\\Form\\' . $class . 'Type', $item);
         $form->handleRequest($request);
+     
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->doctrine->getManager();
 
-            if ($class = 'Size') {
+            $em = $this->doctrine->getManager();
+            if ($class === 'Size') {
                 $size = $form->getData()->getSize();
                 $item->setSize($size);
             } else {
@@ -336,6 +356,7 @@ public function stock(int $page, string $category, string $sorting): Response
         $item = $this->doctrine->getRepository('App\\Entity\\' . $class)->find($id);
         $em->remove($item);
         $em->flush();
+
         switch ($class) {
             case 'User':
                 $this->addFlash(

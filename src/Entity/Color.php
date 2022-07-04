@@ -64,7 +64,6 @@ class Color
             $this->stocks[] = $stock;
             $stock->setColor($this);
         }
-
         return $this;
     }
 
@@ -75,11 +74,13 @@ class Color
                 $stock->setColor(null);
             }
         }
-
         return $this;
     }
     public function __toString() 
     {
+        if ($this->name  === null) {
+            return '';
+        }
         return $this->name;
     }
     

@@ -70,7 +70,6 @@ class ShopController extends AbstractController
                     FileHandler $fileHandler
                     ): Response
     {
-        $sizesReduced = [];
         $product = $this->doctrine->getRepository(Product::class)->find($id);
         
         $productsList = $this->doctrine->getRepository(Product::class)->
@@ -118,15 +117,16 @@ class ShopController extends AbstractController
             ],
            )]
           
-    public function itemsFilter($sizes,
-                                $brands,
-                                $priceFrom,
-                                $priceTo,
-                                $category, 
-                                $searchText,
-                                $sortBy,
-                                $page,
-                                Request $request)
+    public function itemsFilter(
+                        $sizes,
+                        $brands,
+                        $priceFrom,
+                        $priceTo,
+                        $category, 
+                        $searchText,
+                        $sortBy,
+                        $page
+                        )
     {
 
        // dump($request->query->get('sizes'));
@@ -237,7 +237,6 @@ class ShopController extends AbstractController
         $session->set('data', null);
         return $this->redirectToRoute('shopping_bag');
     }
-
     /** 
      * No route functions
      */

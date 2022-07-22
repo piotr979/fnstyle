@@ -57,7 +57,7 @@ class FileHandler
                         return null;
                     }
                     $imagesWithPaths[] = '/uploads/products/' .
-                        $categoryName
+                        preg_replace('/\s+/', '_', $categoryName)
                         .  '/' . $image;
                 }
         return $imagesWithPaths;

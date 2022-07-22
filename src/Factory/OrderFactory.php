@@ -16,6 +16,7 @@ class OrderFactory {
               ->setUpdatedAt(new \DateTime());
         return $order;
     }
+    
     public function createOrderItem(Product $product): OrderItem
     {
         $orderItem = new OrderItem();
@@ -23,6 +24,5 @@ class OrderFactory {
         $orderItem->setQuantity(1);
         return $orderItem;
     }
-
 
 }

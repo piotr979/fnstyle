@@ -3,7 +3,6 @@ import Routing from '/vendor/friendsofsymfony/jsrouting-bundle/Resources/public/
 
 Routing.setRoutingData(routes);
 
-
   // collect data 
   document.addEventListener('DOMContentLoaded', function() {
        
@@ -37,10 +36,7 @@ Routing.setRoutingData(routes);
 
     // create path in JS without FOSjsBUndle
     // by replacing values in URL variables
-   
-      
-        
-   
+
     var url = Routing.generate('items_filter', {
         'sizes': sizeList.length > 0 ? sizeList.toString() : 'noSizes',
         'brands': brandList.length > 0 ? brandList.toString() : 'noBrands',
@@ -48,8 +44,6 @@ Routing.setRoutingData(routes);
         'priceTo': priceToInput.value != '' ? priceToInput.value : '99999',
         'category': 'allCats'});
     
-     
-
         // redirect with built URL address
         location.href = url;
     })

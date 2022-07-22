@@ -17,7 +17,9 @@
 				<p>
 					<small class="text-secondary"></small>
 				</p>
-				<h2 class="fw-bold">${{ product.price }}</h2>
+				<h2 class="fw-bold" id="product-price"
+					data-price="{{ product.price }}">${{ product.price }}
+				</h2>
 				<p class="fw-bold mb-0">{{ product.brand }}</p>
 				<p>{{ product.model }}</p>
 				<ul class="list-unstyled mt-4">
@@ -79,7 +81,6 @@
 {% block javascripts %}
 {{ parent() }}
 <script>
-
 	document.addEventListener("DOMContentLoaded", function() { 
 	
 	// This script below handles inputs and adding to cart.
@@ -90,9 +91,6 @@
 
 	let colorSelect = document.getElementById('color-select');
 	let sizeSelect = document.getElementById('size-select');
-	
-	
-
 	let avail = document.getElementById('availability');
 
 	const setQuantity = (selectedColor, selectedSize ) => {
@@ -106,6 +104,8 @@
 			avail.innerHTML = '0';
 		}
 	}
+
+	// This part manages size and available quantity.
 	const updateColorSelect = (selectedSize) => {
 			const relatedStocks = stocks.filter( stock => stock.size == selectedSize);
 		colorSelect.innerHTML = relatedStocks.map ( stock =>

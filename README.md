@@ -22,5 +22,5 @@ TODO:
 
 
 
-![alt text](src1.jpg)
-![alt text](src1.png)
+![alt text](https://github.com/piotr979/fnstyle/blob/main/scr1.jpg)
+![alt text](https://github.com/piotr979/fnstyle/blob/main/scr2.jpg)

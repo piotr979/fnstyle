@@ -49,6 +49,7 @@ class AdminController extends AbstractController
     public function index(int $page, string $category, string $sorting): Response
     {
         $repo = $this->doctrine->getRepository(Product::class);
+        $stats = $this->getStats();
         $products = $repo->findAllPaginated(
             $page,
             $category,
@@ -56,7 +57,8 @@ class AdminController extends AbstractController
         );
         $stocks = $this->doctrine->getRepository(Stock::class);
         return $this->render('admin/catalog.html.twig', [
-            'products' => $products
+            'products' => $products,
+            'stats' => $stats
         ]);
     }
 
@@ -146,13 +148,15 @@ class AdminController extends AbstractController
     public function stock(int $page, string $category, string $sorting): Response
     {
     $repo = $this->doctrine->getRepository(Product::class);
+    $stats = $this->getStats();
     $products = $repo->findAllPaginated(
         $page,
         $category,
         $sorting
     );
     return $this->render('admin/stock.html.twig', [
-        'products' => $products
+        'products' => $products,
+        'stats' => $stats
     ]);
 }
     // Edit stock
@@ -192,7 +196,10 @@ class AdminController extends AbstractController
     #[Route('/sales', name: 'sales')]
     public function sales()
     {
-        return $this->render('admin/sales.html.twig');
+        $stats = $this->getStats();
+        return $this->render('admin/sales.html.twig', [
+            'stats' => $stats
+        ]);
     }
 
      // ***** CUSTOMERS  ********** //
@@ -207,14 +214,16 @@ class AdminController extends AbstractController
                     )]
     public function getCustomers(int $page, string $search, string $sorting): Response
     {
+        $stats = $this->getStats();
         $customers = $this->doctrine->getRepository(User::class)->findAllPaginated(
             $page,
             $search,
             $sorting
         );
-
+     
         return $this->render('admin/customers.html.twig', [
-            'customers' => $customers
+            'customers' => $customers,
+            'stats' => $stats
         ]);
     }
 
@@ -242,10 +251,12 @@ class AdminController extends AbstractController
     {
         $allItems = $this->doctrine->getRepository('App\\Entity\\' . $class)->
             findAllPaginated($page, $class);
+        $stats = $this->getStats();
         return $this->render('admin/settings.html.twig', [
             'items' => $allItems,
             'classItem' => $class,
-            'page' => $page
+            'page' => $page,
+            'stats' => $stats
         ]);
           
     }
@@ -371,5 +382,18 @@ class AdminController extends AbstractController
             'page' => 1,
             'class' => $class
         ]);
+    }
+
+    private function getStats()
+    {
+        // 3 queries :) must be improved
+        $usersQty = $this->doctrine->getRepository(User::class)->countCustomers();
+        $productsQty = $this->doctrine->getRepository(Product::class)->countProducts();
+        $stockQty = $this->doctrine->getRepository(Stock::class)->countStock();
+        return [
+            'usersQty' => $usersQty,
+            'productsQty' => $productsQty,
+            'stockQty' => $stockQty
+        ];
     }
 }

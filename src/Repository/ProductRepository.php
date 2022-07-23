@@ -142,6 +142,16 @@ class ProductRepository extends ServiceEntityRepository
         return null;
     }
 }
+    public function countProducts()
+    {
+        $qb =  $this->createQueryBuilder('p')
+        ->select('COUNT (p.id) as productsQty')
+        ->getQuery()
+        ->getResult()
+        ;
+        return $qb[0]['productsQty'];
+        
+    }
     public function getProducts(string $category, int $amount)
     {
 

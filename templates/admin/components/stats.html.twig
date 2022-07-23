@@ -1,22 +1,22 @@
 	<div class="row">
 			<div class="col-12 col-sm-4 my-4">
 				<div class="info-block-1 d-flex flex-column text-center">
-					<p class="text-light my-1">Items sold total</p>
-					<h3 class="text-light fw-bold">{{ sold_items }}</h3>
+					<p class="text-light my-1">Items in stock</p>
+					<h3 class="text-light fw-bold">{{ stats.stockQty}}</h3>
 				</div>
 			</div>
 
 			<div class="col-12 col-sm-4 my-4">
 				<div class="info-block-2 d-flex flex-column text-center">
-					<p class="text-light my-1">Sold products of</p>
-					<h3 class="text-light fw-bold">{{ sold_total }}</h3>
+					<p class="text-light my-1">Products total</p>
+					<h3 class="text-light fw-bold">{{ stats.productsQty }}</h3>
 				</div>
 			</div>
 
 			<div class="col-12 col-sm-4 my-4">
 				<div class="info-block-3 d-flex flex-column text-center">
 					<p class="text-light my-1">Customers total</p>
-					<h3 class="text-light fw-bold">{{ customers }}</h3>
+					<h3 class="text-light fw-bold">{{ stats.usersQty }}</h3>
 				</div>
 			</div>
 		</div>

@@ -74,6 +74,16 @@ class StockRepository extends ServiceEntityRepository
         }
     }
 
+    public function countStock()
+    {
+        $qb = $this->createQueryBuilder('s')
+        ->select('COUNT(s.qty) AS stockQty')
+        ->getQuery()
+        ->getResult()
+        ;
+
+        return $qb[0]['stockQty'];
+    }
     // /**
     //  * @return Stock[] Returns an array of Stock objects
     //  */

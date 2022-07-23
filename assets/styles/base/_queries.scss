@@ -1,3 +1,29 @@
+@include media-breakpoint-down(lg) {
+    .filters-aside {
+        position: absolute;
+        background-color: white;
+        z-index: 999999;
+        top:0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        min-height: 1200px;
+        height: 100vh;
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+        display: block;
+        transform: translateX(-100%);
+        transition: all .4s;
+    }
+    .filters-open {
+        opacity: 1;
+        pointer-events: auto;
+        visibility: visible;
+        transform: translateX(0);
+    }
+}
 @include media-breakpoint-up(md) {
     .font-smaller {
         font-size: 1rem;
@@ -58,6 +84,9 @@
     }
     label #open-sidebar, label #close-sidebar {
         top: 1rem;
+    }
+    #show-filters__button {
+        display: none;
     }
 }
 @include media-breakpoint-up(xl) {

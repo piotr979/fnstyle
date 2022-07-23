@@ -9,6 +9,7 @@
 
 
 @import 'components/buttons';
+@import 'components/filters-aside';
 @import 'components/mini-item';
 //@import 'components/modal';
 @import 'components/image-button';
@@ -29,6 +30,7 @@
 @import 'vendor/uploadifive.css';
 html {
     overflow-x: hidden;
+    height: 100%;
 }
 body {
     background-color: white;

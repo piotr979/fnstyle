@@ -27,7 +27,9 @@
 				<div class="pt-2 row d-flex align-items-center">
 					<div class="col-12">
 						{% for message in app.flashes('notice') %}
-							<p class="text-success">{{ message }}</p>
+						<div class="alert alert-success">
+							<p class="mb-0">{{ message }}</p>
+						</div>
 						{% endfor %}
 					</div>
 					<div class="top-logo col-8 col-md-4 order-0">

@@ -54,7 +54,10 @@ class ProductRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-    public function findAllPaginated(int $page, string $category, string $sorting )
+    public function findAllPaginated(int $page,
+                                     string $category, 
+                                     string $sorting,
+                                     string $searchString)
     {
         $qb = $this->createQueryBuilder('p')
         ->leftJoin('p.category', 'c')
@@ -62,8 +65,15 @@ class ProductRepository extends ServiceEntityRepository
         ->leftJoin('p.stocks', 'stock')
         ->select('p.id, b.name AS brand, p.model, p.price, SUM (stock.qty) AS total_qty,
             c.name AS category')
-        ->groupBy('p.id')
-        ->getQuery()
+        ->groupBy('p.id');
+
+        if ($searchString !='') {
+            $qb
+                ->where('p.model LIKE :searchString')
+                ->setParameter('searchString', '%' . $searchString . '%' )
+                ;
+        }
+        $qb->getQuery()
         ->getResult()
         ;
        

@@ -14,16 +14,10 @@
 
     const slideText = document.querySelectorAll(".slide-text__head");
     const slideSubText = document.querySelectorAll(".slide-text__subhead");
-    console.log(slideText);
-
     setInterval(
       function () {
         slides.item(currentSlide).style.opacity = 0;
         nextSlide = nextSlide == slidesCount - 1 ? 0 : currentSlide + 1;
-
-        console.log(currentSlide);
-        console.log(slideText.length);
-      
 
         if (currentSlide < slideText.length) {
           slideText[currentSlide].classList.remove("animate__slideInUp");
@@ -39,12 +33,9 @@
           slideSubText[currentSlide].classList.add("animate__slideInUp");
         }
       },
-
       5000
     );
   }
-
-
 		const modalButton = document.getElementById('cart-modal');
 		const switchButton = document.getElementById('cart-modal-switcher');
 		const main = document.getElementById('main');
@@ -54,18 +45,10 @@
     if (switchButton != null && modalButton != null ) {
 		switchButton.addEventListener('click', function() {
 			transformModal();
-  
 		})
-  
-
 		modalButton.addEventListener('click', function() {
 			transformModal();
 		})
   }
-
-  
-
-
-
 
 

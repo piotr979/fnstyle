@@ -35,7 +35,7 @@ class ShopController extends AbstractController
     }
 
     /**
-     * Opens main page of admin section
+     * Opens main page of
      */
     #[Route('/', name: 'home')]
     public function index(

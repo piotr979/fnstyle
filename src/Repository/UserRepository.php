@@ -64,14 +64,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->persist($user);
         $this->_em->flush();
     }
-    public function findAllPaginated(int $page, string $search, string $sorting) 
+    public function findAllPaginated(int $page, string $sorting, string $searchString) 
     {
         $role = "ROLE_CUSTOMER";
         $qb = $this->createQueryBuilder('u')
             ->select('u')
             ->where('u.roles LIKE :roles')
             ->setParameter('roles', '%"'.$role.'"%')
-            ->getQuery()
+            ;
+            if ($searchString != '') {
+                $qb->andWhere('u.email LIKE :searchString')
+                    ->setParameter('searchString', '%' . $searchString . '%')
+                ;
+            }
+            $qb->getQuery()
             ->getResult()
             ;
         if (isset($qb)) {

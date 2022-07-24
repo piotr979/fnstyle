@@ -40,20 +40,23 @@ class AdminController extends AbstractController
     }
 
     // Displays main page (catalog)
-    #[Route('/catalog/{page}/{category}/{sorting}', 
+    #[Route('/catalog/{page}/{category}/{sorting}/{searchString}', 
                 name: 'catalog',
+                options: ['expose' => true],
                 defaults: ['sorting' => 'name_desc', 
                             'page' => 1, 
-                            'category' => 'all']
+                            'category' => 'all',
+                            'searchString' => '']
                 )]
-    public function index(int $page, string $category, string $sorting): Response
+    public function index(int $page, string $category, string $sorting, string $searchString): Response
     {
         $repo = $this->doctrine->getRepository(Product::class);
         $stats = $this->getStats();
         $products = $repo->findAllPaginated(
             $page,
             $category,
-            $sorting
+            $sorting,
+            $searchString
         );
         $stocks = $this->doctrine->getRepository(Stock::class);
         return $this->render('admin/catalog.html.twig', [
@@ -140,20 +143,24 @@ class AdminController extends AbstractController
     }
 
     // ****** STOCK ************** //
-    #[Route('/stock/{page}/{category}/{sorting}', 
+    #[Route('/stock/{page}/{category}/{sorting}/{searchString}',  
                 name: 'stock',
-                defaults: ['sorting' => 'name_desc',
+                options: ['expose' => true],
+                defaults: ['sorting' => 'name_desc', 
                             'page' => 1, 
-                            'category' => 'all'])]
-    public function stock(int $page, string $category, string $sorting): Response
+                            'category' => 'all',
+                            'searchString' => ''])]
+    public function stock(int $page, string $category, string $sorting, string $searchString): Response
     {
     $repo = $this->doctrine->getRepository(Product::class);
     $stats = $this->getStats();
     $products = $repo->findAllPaginated(
         $page,
         $category,
-        $sorting
+        $sorting,
+        $searchString
     );
+    
     return $this->render('admin/stock.html.twig', [
         'products' => $products,
         'stats' => $stats
@@ -193,7 +200,8 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/sales', name: 'sales')]
+    #[Route('/sales', name: 'sales',
+                        options: ['expose' => true])]
     public function sales()
     {
         $stats = $this->getStats();
@@ -205,20 +213,21 @@ class AdminController extends AbstractController
      // ***** CUSTOMERS  ********** //
 
     // List of all customers 
-    #[Route('/customers/{page}/{search}/{sorting}', 
+    #[Route('/customers/{page}/{sorting}/{searchString}', 
                 name: 'customers',
+                options: ['expose' => true],
                 defaults: [
                     'sorting' => 'name_desc', 
                     'page' => 1, 
-                    'search' => '']
+                    'searchString' => '']
                     )]
-    public function getCustomers(int $page, string $search, string $sorting): Response
+    public function getCustomers(int $page, string $sorting, string $searchString): Response
     {
         $stats = $this->getStats();
         $customers = $this->doctrine->getRepository(User::class)->findAllPaginated(
             $page,
-            $search,
-            $sorting
+            $sorting,
+            $searchString
         );
      
         return $this->render('admin/customers.html.twig', [

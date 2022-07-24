@@ -37,7 +37,15 @@ class SecurityController extends AbstractController
         'error' => $error
     ]);
     }
-    
+    #[Route(path:'/logged-successfully', name: 'logged_successfully')]
+    public function loggedSuccessfully()
+    {
+        $this->addFlash(
+           'notice',
+           'You\'ve been logged in successfully.'
+        );
+        return $this->redirectToRoute('home');
+    }
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {

@@ -36,10 +36,12 @@ const updateNumberByCartButton = () => {
 const populateList = (shoppingUl) => {
     // shoppingUl is HTML collection
     // shoppingCart is JS array of objects
-    while (shoppingUl.firstChild) {
-        shoppingUl.removeChild(shoppingUl.firstChild);
+    if (shoppingUl != null) {
+        while (shoppingUl.firstChild) {
+            shoppingUl.removeChild(shoppingUl.firstChild);
+            }
+        }
 
-    }
     //populate list again
     shoppingCart.cartItems.forEach((shoppingItem) => {
         const li = document.createElement("li");

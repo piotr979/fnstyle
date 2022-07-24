@@ -4,9 +4,16 @@ import Routing from '/vendor/friendsofsymfony/jsrouting-bundle/Resources/public/
 Routing.setRoutingData(routes);
 
 document.addEventListener('DOMContentLoaded', function() {
-    const searchForm = document.getElementById('top-search-form');
+    const searchAllForm = document.getElementById('top-search-form');
+    const searchProductForm = document.getElementById('search-product__form');
     
-    searchForm.addEventListener('submit', function(e) {
+    const searchStock = document.getElementById('search-stock');
+    const searchUsers = document.getElementById('search-users');
+
+
+    // search on the main page
+    if (searchAllForm != null) {
+    searchAllForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const searchString = document.getElementById('search-string').value;
 
@@ -16,4 +23,27 @@ document.addEventListener('DOMContentLoaded', function() {
        
         location.href = url;
     });
+    } 
+
+    // prepares search based on routename and search string
+    // search products (when route name = catalog)
+    // search stocks (when routename = stock)
+    // search customers (when routename = customers)
+    if (searchProductForm != null) {
+        searchProductForm.addEventListener('submit', (e) => {
+          
+            e.preventDefault();
+         
+            const searchString = document.getElementById('search-product__input').value;
+            console.log(searchString);
+            var url = Routing.generate(
+                searchProductForm.dataset.routename, {
+                'searchString': searchString
+            })
+
+            location.href = url;
+        });
+
+   
+    }
 })

@@ -4,7 +4,15 @@
 	<div class="container">
 		<div class="row">
             <h2 class="text-center my-4">Customer profile</h2>
+			<div>
+				{% for message in app.flashes('notice') %}
+					<div class="alert alert-success">
+							<p class="mb-0">{{ message }}</p>
+						</div>
+				{% endfor %}
+			</div>
         </div>
+
 		{{ form_start(profileForm) }}
 		<div class="row">
 			<div class="col-12 col-md-6">

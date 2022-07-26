@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+	<section class="container">
+		<div class="row">
+		 <div class="col-12">
+         <h3 class="my-3">Categories</h3>
+         <ul class="cats-list">
+         {% for category in categories %}
+           {% if category.removable == true %}
+        <li class="d-block mt-2">
+            <a class="cat-list__anchor" href="{{ path('items_filter', { 'category': category.name }) }} ">
+                    {{ category.name }}
+            </a>
+        </li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+         </div>
+
+
+		</div>
+        	
+	</section>
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+   
+{% endblock %}
+

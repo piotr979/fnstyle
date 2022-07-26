@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\ContactUsType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,5 +39,18 @@ class MiscController extends AbstractController
     //   $file = $_FILES['product']['tmp_name']['images'][0];
     //   $file->move_uploaded('/uploads');
      
+    }
+    #[Route('/contact-us', name: 'contact_us')]
+    public function contactUs()
+    {
+        $contactForm = $this->createForm(ContactUsType::class);
+
+        if ($contactForm->isSubmitted() && $contactForm->isValid())
+            {
+                return $this->redirectToRoute('shop/contact-us-submitted.html.twig');
+            }
+        return $this->render('shop/contact-us.html.twig', [
+            'contactForm' => $contactForm->createView()
+        ]);
     }
 }

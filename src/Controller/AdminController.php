@@ -245,7 +245,15 @@ class AdminController extends AbstractController
         $profileForm->handleRequest($request);
 
         if ($profileForm->isSubmitted() && $profileForm->isValid()) {
-            dump('done');
+            $updatedUserData = $profileForm->getData();
+            $em = $this->doctrine->getManager();
+            $em->persist($updatedUserData);
+            $em->flush();
+            $this->addFlash(
+               'notice',
+               'User\'s data updated.'
+            );
+
         }
 
         return $this->render('admin/edit-customer.html.twig', [

@@ -172,7 +172,15 @@ class ShopController extends AbstractController
         ]
     );
     }
-
+    #[Route('all-categories', name: 'all_categories')]
+    public function allCategories()
+    {
+        $categories = $this->doctrine->getRepository(Category::class)->findAll();
+        //dump($categories);exit;
+        return $this->render('shop/all-categories.html.twig', [
+            'categories' => $categories
+        ]);
+    }
     /** Works in background 
      * Its called from JS function and passes data from LocalStorage to PHP
      */

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+	<section class="container">
+		<div class="row">
+		    <div class="col-12">
+                    <h3 class="my-4">Contact us</h3>
+                    {{ form(contactForm )}}
+                     <small class="mb-4">Sending emails is not implemented.</small>
+         </div>
+		</div>
+        	
+	</section>
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+   
+{% endblock %}
+

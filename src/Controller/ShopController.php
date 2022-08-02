@@ -239,11 +239,22 @@ class ShopController extends AbstractController
 
         return $this->redirectToRoute('shopping_bag');
     }
+    /**
+     * Clears the cart and redirects back to shopping bag
+     */
     #[Route('clear-cart', name: 'clear_cart')]
     public function clearCart(SessionInterface $session) 
     {
         $session->set('data', null);
         return $this->redirectToRoute('shopping_bag');
+    }
+    /**
+     * Payment page, not implemented yet
+     */
+    #[Route('payment', name: 'payment')]
+    public function payment(): Response
+    {
+        return new Response("To be implemented. Please go back.");
     }
     /** 
      * No route functions

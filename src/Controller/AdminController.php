@@ -39,7 +39,9 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('catalog');
     }
 
-    // Displays main page (catalog)
+    /**
+     * Displays main page (list of products)
+    */ 
     #[Route('/catalog/{page}/{category}/{sorting}/{searchString}', 
                 name: 'catalog',
                 options: ['expose' => true],
@@ -65,14 +67,15 @@ class AdminController extends AbstractController
         ]);
     }
 
-    // Adding new product (clothes, beauty, etc.)
+    /**
+     * Subpage that lets admin to add new product (clothes, beauty, etc.)
+     */
     #[Route('/add-product', name: 'add_product')]
     public function addProduct(Request $request, 
                     ManagerRegistry $doctrine, 
                     FileHandler $fileHandler
                     )
     {
-        
         $product = new Product();
         $productForm = $this->createForm(ProductType::class, $product);
         $productForm->handleRequest($request);
@@ -95,6 +98,9 @@ class AdminController extends AbstractController
         ]);
     }
 
+    /**
+     * Subpage to edit existing product
+     */
     #[Route('/edit-product/{id}', name: 'edit-product')]
     public function editItem($id, 
                             FileHandler $fileHandler, 
@@ -142,7 +148,10 @@ class AdminController extends AbstractController
         ]);
     }
 
-    // ****** STOCK ************** //
+    /**
+     * Displays all existing stock. 
+     * No items can be removed/added. It's done by catalog page
+     */
     #[Route('/stock/{page}/{category}/{sorting}/{searchString}',  
                 name: 'stock',
                 options: ['expose' => true],
@@ -166,7 +175,9 @@ class AdminController extends AbstractController
         'stats' => $stats
     ]);
 }
-    // Edit stock
+    /**
+     * Edit existing stock item.
+     */
     #[Route('/edit-stock/{productId}', name: 'edit_stock')]
     public function editStock($productId, Request $request): Response
     {
@@ -200,6 +211,10 @@ class AdminController extends AbstractController
         ]);
     }
 
+    /**
+     * Sales management page. 
+     * TO BE DONE.
+     */
     #[Route('/sales', name: 'sales',
                         options: ['expose' => true])]
     public function sales()
@@ -212,7 +227,10 @@ class AdminController extends AbstractController
 
      // ***** CUSTOMERS  ********** //
 
-    // List of all customers 
+    /**
+     * Provides list of all customers.
+     */
+
     #[Route('/customers/{page}/{sorting}/{searchString}', 
                 name: 'customers',
                 options: ['expose' => true],
@@ -236,7 +254,9 @@ class AdminController extends AbstractController
         ]);
     }
 
-    // Edit customer
+    /**
+     * Subpage that lets to edit existing customer's details.
+    */
     #[Route('/edit-customer/{id}', name: 'edit-customer')]
     public function editCustomer($id, Request $request): Response
     {
@@ -313,7 +333,9 @@ class AdminController extends AbstractController
         ]);
     }
 
-    // Adds new category (form)
+    /**
+     * Route to add new category.
+     */
     #[Route('/category-add', name: 'category_add')]
     public function addCategory(Request $request)
     {
@@ -335,7 +357,9 @@ class AdminController extends AbstractController
         ]);
     }
 
-    // Adds new brand, size,color (form)
+    /** 
+     * Adds new brand, size,color (form)
+    */ 
     #[Route('/item-add/{class}', name: 'item_add')]
     public function itemAdd($class, Request $request)
     {
@@ -376,7 +400,9 @@ class AdminController extends AbstractController
         ]);
     }
 
-    // Removes brand, color, size
+    /** 
+     * Removes brand, color, size
+    */ 
     #[Route('/remove-item/{id}/{class}', name: 'remove_item')]
     public function removeItem($id, $class)
     {

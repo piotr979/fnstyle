@@ -12,9 +12,7 @@ class StockFixture extends Fixture
     {
         $stock = new Stock();
         $stock->setQty(4);
-            $manager->persist($stock);
-      
-       
+        $manager->persist($stock);
         $manager->flush();
     }
 

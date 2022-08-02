@@ -18,7 +18,6 @@ class ColorFixture extends Fixture
             $clr->setName($color);
             $manager->persist($clr);
         }
-       
         $manager->flush();
     }
 }

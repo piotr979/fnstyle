@@ -14,13 +14,11 @@ class SizeFixture extends Fixture
             '32','34','36','38','40','42','44','46','48','50',
             'XS','S','M','ML','L','XL','XXL'
         ];
-
         foreach($sizes as $size) {
             $se = new Size();
             $se->setSize($size);
             $manager->persist($se);
         }
-       
         $manager->flush();
     }
 

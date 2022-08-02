@@ -71,8 +71,6 @@ class UserFixture extends Fixture
                     ObjectManager $manager,
                    )
     {
-       
-
         $address = new Address();
         $address->setAddressLine1($addressLine1);
         $address->setAddressLine2($addressLine2);
@@ -83,7 +81,6 @@ class UserFixture extends Fixture
         // Save address first
         $manager->persist($address);
        
-
         $user = new User();
         $user->setEmail($email);
         $user->setPassword(

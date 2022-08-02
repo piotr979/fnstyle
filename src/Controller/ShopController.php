@@ -35,7 +35,7 @@ class ShopController extends AbstractController
     }
 
     /**
-     * Opens main page of
+     * Opens main page 
      */
     #[Route('/', name: 'home')]
     public function index(
@@ -129,7 +129,6 @@ class ShopController extends AbstractController
                         )
     {
 
-       // dump($request->query->get('sizes'));
        $allBrands = $this->doctrine->getRepository(Brand::class)->findAllBrands();
        $allSizes = $this->doctrine->getRepository(Size::class)->getChoices();
        $allCats = $this->doctrine->getRepository(Category::class)->findAllTheLeafNodes();
@@ -181,10 +180,10 @@ class ShopController extends AbstractController
             'categories' => $categories
         ]);
     }
-    /** Works in background 
+
+    /** Works in the background 
      * Its called from JS function and passes data from LocalStorage to PHP
      */
-
     #[Route('checkout', name: 'checkout')]
     public function checkout(
                     Request $request, 
@@ -256,9 +255,7 @@ class ShopController extends AbstractController
     {
         return new Response("To be implemented. Please go back.");
     }
-    /** 
-     * No route functions
-     */
+
     private function addPathToImages($products, string $category)
     {
         foreach($products as &$product) {

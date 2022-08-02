@@ -15,8 +15,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationController extends AbstractController
 {
-    /* This route is used for registeration. Is redirection from
-    ** customer-account route as it's need to be separated from login form.
+    /** 
+    * This route is used for registeration. Is redirection from
+    * customer-account route as it's need to be separated from login form.
     */
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response

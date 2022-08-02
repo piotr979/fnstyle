@@ -58,17 +58,7 @@ class CategoryFixture extends Fixture
               $category, $values[0], $values[1], $values[2] ?? true
           ));
       }
-    $manager->flush();
-        // $product = new Product();
-        // $manager->persist($product);
-        // create TABLE Category (
-        //    category_id INT AUTO_INCREMENT PRIMARY KEY
-        //    name VARCHAR(40) NOT NULL,
-         //   lft INT NO NULL,
-        //    rgt INT NO NULL
-       // )
-        $manager->flush();
-        
+    $manager->flush();        
     }
     public function createCategory(string $name, int $lft, int $rgt, bool $isRemovable): Category
     {

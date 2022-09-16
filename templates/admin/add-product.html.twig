@@ -12,33 +12,28 @@
 		<div class="row mt-2">
 			<div class="col-12 col-md-6">
 			{{ form_start(productForm) }}
-
+			{{ form_row(productForm.brand) }}
+			{{ form_row(productForm.model) }}
+			{{ form_row(productForm.price) }}
+			{{ form_row(productForm.category) }}
+			{{ form_row(productForm.images) }}
+			<img id="image-preview" src="" />
+			
 			{{ form_end(productForm) }}
 			</div>
-		</div>
+		</div >
 </section>
 
 {% endblock %}
 {% block javascripts %}
 	{{ parent() }}
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.2.7/js/plugins/piexif.min.js" type="text/javascript"></script>
-<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.2.7/js/fileinput.min.js"></script>
-<script>
-$(document).ready(function() {
-    // initialize with defaults
-    // with plugin options
-    $("#product_images").fileinput({
-	'previewFileType': 'any',
-	'allowedFileTypes' : ['image'],
-	
-	'initialPreview' : [
-		"https://kartik-v.github.io/bootstrap-fileinput-samples/samples/Desert.jpg"
-	], 
-	initialPreviewAsData: true,
-	initialPreviewFileType: 'image',
-	'allowedFileExtensions': ['jpg', 'gif', 'png']});
-});
-</script>
+	 <script>
+	  document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('product_images');
+        const imagePreview = document.getElementById('image-preview');
+        fileInput.addEventListener('change', () => {
+            imagePreview.src = window.URL.createObjectURL(fileInput.files[0])
+        });
+	  })
+    </script>
 	{% endblock %}

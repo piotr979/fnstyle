@@ -102,5 +102,8 @@ input[type="search"] {
 .cat-list__anchor:hover {
     color: red;
 }
+#image-preview {
+    max-width:20rem;
+}
 @import 'base/queries';
 @import 'abstract/variables';

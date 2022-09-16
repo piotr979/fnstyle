@@ -20,7 +20,6 @@ class ShopController extends AbstractController
 {
     private ManagerRegistry $doctrine;
     private FileHandler $fileHandler;
-    private $number = 0;
     public $session;
     
     /**
@@ -33,17 +32,12 @@ class ShopController extends AbstractController
         $this->doctrine = $doctrine;
         $this->fileHandler = $fileHandler;
     }
-
     /**
      * Opens main page 
      */
     #[Route('/', name: 'home')]
-    public function index(
-            FileHandler $fileHandler, 
-            SessionInterface $session, 
-            Request $request): Response
+    public function index()
     {
-      
         $products = $this->doctrine->getRepository(Product::class)->getProducts('Dresses', 4);
         $products = $this->addPathToImages($products, 'Dresses');
         
@@ -128,7 +122,6 @@ class ShopController extends AbstractController
                         $page
                         )
     {
-
        $allBrands = $this->doctrine->getRepository(Brand::class)->findAllBrands();
        $allSizes = $this->doctrine->getRepository(Size::class)->getChoices();
        $allCats = $this->doctrine->getRepository(Category::class)->findAllTheLeafNodes();
@@ -235,7 +228,6 @@ class ShopController extends AbstractController
                 );
             }
        }
-
         return $this->redirectToRoute('shopping_bag');
     }
     /**

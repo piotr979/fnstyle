@@ -25,17 +25,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     } 
 
-    // prepares search based on routename and search string
+    // prepares search based on routename and searches string
     // search products (when route name = catalog)
     // search stocks (when routename = stock)
     // search customers (when routename = customers)
     if (searchProductForm != null) {
         searchProductForm.addEventListener('submit', (e) => {
           
-            e.preventDefault();
-         
+            e.preventDefault();       
             const searchString = document.getElementById('search-product__input').value;
-            console.log(searchString);
             var url = Routing.generate(
                 searchProductForm.dataset.routename, {
                 'searchString': searchString

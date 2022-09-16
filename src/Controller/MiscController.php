@@ -16,30 +16,12 @@ class MiscController extends AbstractController
     public function uploadAction (Request $request )  
     {
         $form = $this->createFormBuilder ()->getForm () ;
-        $form->handleRequest ( $request ) ;
-        if ( $form->isValid ()) {  
-            
-          
-        }
+        $form->handleRequest($request) ;
         return $this-> render ( 'AcmeAcmeBundle:Default:dropzone.html.twig' , array ( 
             'form' => $form->createView () 
         )) ;
     }
 
-    #[Route('/upload-target', name: 'upload-target')]
-    public function uploads()
-    {
-      $uploaddir = '/var/www/uploads/';
-      $uploadfile = $uploaddir . basename($_FILES['product']['name']['images'][0]);
-      if (move_uploaded_file($_FILES['product']['tmp_name']['images'][0], $uploadfile)) {
-        return new JsonResponse(array('' => ''));
-    } else {
-        return new JsonResponse(array('' => ''));
-    }
-    //   $file = $_FILES['product']['tmp_name']['images'][0];
-    //   $file->move_uploaded('/uploads');
-     
-    }
     #[Route('/contact-us', name: 'contact_us')]
     public function contactUs()
     {
